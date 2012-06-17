@@ -1,4 +1,12 @@
-
+/*!
+ * Bootstrap v2.0.2
+ *
+ * Copyright 2012 Twitter, Inc
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Designed and built with all the love in the world @twitter by @mdo and @fat.
+ */
 article,
 aside,
 details,
@@ -113,8 +121,10 @@ textarea {
   display: block;
   width: 100%;
   min-height: 28px;
-  
-  
+  /* Make inputs at least the height of their button counterpart */
+
+  /* Makes inputs behave like true block-level elements */
+
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
@@ -637,14 +647,16 @@ input[type="radio"] {
   padding: 0;
   margin: 3px 0;
   *margin-top: 0;
-  
+  /* IE7 */
+
   line-height: normal;
   cursor: pointer;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
   border: 0 \9;
-  
+  /* IE9 and down */
+
 }
 input[type="image"] {
   border: 0;
@@ -669,9 +681,11 @@ input[type="submit"] {
 select,
 input[type="file"] {
   height: 28px;
-  
+  /* In IE7, the height of the select element cannot be changed by height, only font-size */
+
   *margin-top: 4px;
-  
+  /* For IE7, add top margin to align select with labels */
+
   line-height: 28px;
 }
 input[type="file"] {
@@ -739,7 +753,8 @@ textarea:focus {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
   outline: 0;
   outline: thin dotted \9;
-  
+  /* IE6-9 */
+
 }
 input[type="file"]:focus,
 input[type="radio"]:focus,
@@ -959,7 +974,8 @@ select:focus:required:invalid:focus {
 .help-inline {
   display: inline-block;
   *display: inline;
-  
+  /* IE7 inline-block hack */
+
   *zoom: 1;
   vertical-align: middle;
   padding-left: 5px;
@@ -1152,7 +1168,8 @@ legend + .control-group {
 }
 .form-horizontal .controls {
   margin-left: 160px;
-  
+  /* Super jank IE7 fix to ensure the inputs in .input-append and input-prepend don't inherit the margin of the parent, in this case .controls */
+
   *display: inline-block;
   *margin-left: 0;
   *padding-left: 20px;
@@ -1945,7 +1962,8 @@ table .span24 {
 .btn {
   display: inline-block;
   *display: inline;
-  
+  /* IE7 inline-block hack */
+
   *zoom: 1;
   padding: 4px 10px 4px;
   margin-bottom: 0;
@@ -2277,7 +2295,8 @@ input[type="submit"].btn.btn-mini {
 .btn-toolbar .btn-group {
   display: inline-block;
   *display: inline;
-  
+  /* IE7 inline-block hack */
+
   *zoom: 1;
 }
 .btn-group .btn {
@@ -3106,7 +3125,8 @@ input[type="submit"].btn.btn-mini {
 .breadcrumb li {
   display: inline-block;
   *display: inline;
-  
+  /* IE7 inline-block hack */
+
   *zoom: 1;
   text-shadow: 0 1px 0 #ffffff;
 }
@@ -3124,7 +3144,8 @@ input[type="submit"].btn.btn-mini {
 .pagination ul {
   display: inline-block;
   *display: inline;
-  
+  /* IE7 inline-block hack */
+
   *zoom: 1;
   margin-left: 0;
   margin-bottom: 0;
@@ -3262,7 +3283,8 @@ input[type="submit"].btn.btn-mini {
   border: 1px solid #999;
   border: 1px solid rgba(0, 0, 0, 0.3);
   *border: 1px solid #999;
-  
+  /* IE6-7 */
+
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;

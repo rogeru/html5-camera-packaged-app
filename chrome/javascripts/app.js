@@ -1,6 +1,6 @@
 (function() {
 
-  define(['mylibs/postman/postman', 'mylibs/utils/utils', 'mylibs/file/file'], function(postman, utils, file) {
+  define(['mylibs/postman/postman', 'mylibs/utils/utils', 'mylibs/file/file', 'mylibs/intents/intents', 'mylibs/share/share', 'mylibs/notify/notify'], function(postman, utils, file, intents, share, notify) {
     'use strict';
     var canvas, ctx, draw, errback, hollaback, iframe, pub, update;
     iframe = iframe = document.getElementById("iframe");
@@ -36,15 +36,16 @@
     };
     return pub = {
       init: function() {
+        notify.init();
+        share.init();
         utils.init();
-        postman.init(iframe);
+        intents.init();
         file.init();
-        return $.subscribe("/app/ready", function() {
-          $.publish("/file/read", []);
-          return navigator.webkitGetUserMedia({
-            video: true
-          }, hollaback, errback);
-        });
+        postman.init(iframe.contentWindow);
+        $.publish("/file/read", []);
+        return navigator.webkitGetUserMedia({
+          video: true
+        }, hollaback, errback);
       }
     };
   });

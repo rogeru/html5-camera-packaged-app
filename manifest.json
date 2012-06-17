@@ -6,7 +6,7 @@
  "offline_enabled" : true,
  "app": {
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [ "background.js" ]
   }
  },
  "icons": {
@@ -18,18 +18,33 @@
    "unlimitedStorage",
    "appWindow",
    "videoCapture",
-   "fileSystem"
+   "fileSystem",
+   "notifications",
+   "identity",
+    "https://docs.google.com/feeds/",
+    "https://docs.googleusercontent.com/",
+    "https://spreadsheets.google.com/feeds/",
+    "https://ssl.gstatic.com/"
  ],
  "intents": {
     "http://webintents.org/pick": [
       {
         "type": ["image/*"],
-        "href": "main.html",
+        "href": "chrome/main.html",
         "title" : "Take Picture With HTML5 Camera",
         "disposition" : "window"
       }]
   },
   "sandbox": {
     "pages": [ "chrome/app/index.html" ]
+  },
+  "oauth2": {
+    "client_id": "440408695849.apps.googleusercontent.com",
+    "scopes": [
+      "https://docs.google.com/feeds/",
+      "https://docs.googleusercontent.com/",
+      "https://spreadsheets.google.com/feeds/",
+      "https://www.googleapis.com/auth/drive.file"
+    ]
   }
 }

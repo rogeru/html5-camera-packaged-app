@@ -1,63 +1,66 @@
 define([
-
-  'mylibs/utils/BlobBuilder.min'
-
+	'mylibs/utils/BlobBuilder.min'
 ], () ->
+	
+	canvas = document.createElement("canvas")
+	ctx = canvas.getContext("2d")
 
-	canvas = {}
-	ctx = {}
+	toDataURL = (image) ->
+
+		canvas.width = image.width
+		canvas.height = image.height
+
+		ctx.drawImage image, 0, 0, image.width, image.height
+
+		canvas.toDataURL image
+
+	toBlob = (dataURL) ->
+
+		if dataURL.split(',')[0].indexOf('base64') >= 0
+			byteString = atob(dataURL.split(',')[1])
+		else
+			byteString = unescape(dataURL.split(',')[1])
+
+		mimeString = dataURL.split(',')[0].split(':')[1].split(';')[0]
+		
+		ab = new ArrayBuffer(byteString.length, 'binary')
+		
+		ia = new Uint8Array(ab)
+
+		for bytes in byteString
+			ia[_i] = byteString.charCodeAt(_i)
+
+		blobBuilder = new BlobBuilder()
+
+		blobBuilder.append(ab);
+
+		# return the blob
+		blobBuilder.getBlob mimeString
 
 	pub = 
-
+	
 		init: ->
+	
+			Image.prototype.toDataURL = ->
 
-			# initialize the drawing canvas
-            canvas = document.createElement("canvas")
-            
-            canvas.width = 460
-            canvas.height = 340
+				toDataURL = (image) ->
 
-            ctx = canvas.getContext("2d")
+			Image.prototype.toBlob = ->
 
-            Image.prototype.toDataURL = ->
+				dataURL = toDataURL(this)
 
-            	# draw the image to a canvas
-            	ctx.drawImage this, 0, 0, this.width, this.height
+				toBlob(dataURL)
 
-            	# get the data url off the canvas
-            	canvas.toDataURL()
+		toBlob: (dataURL) ->
 
-            # modify the image prototype to turn convert it to a blob
-            Image.prototype.toBlob = ->
+			toBlob(dataURL)
 
-            	Image.prototype.toDataURL()
 
-            	# convert the data url to a blob
-            	if dataURI.split(',')[0].indexOf('base64') >= 0
-                	byteString = atob(dataURI.split(',')[1])
-	            else
-	                byteString = unescape(dataURI.split(',')[1])
-	            
-	            mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
-	            
-	            ab = new ArrayBuffer(byteString.length, 'binary')
-	            
-	            ia = new Uint8Array(ab)
-	            
-	            for bytes in byteString
-	                ia[_i] = byteString.charCodeAt(_i)
-	            
-	            blobBuiler = new BlobBuilder()
-	             
-	            blobBuiler.append(ab);
-	            
-	            # return the blob
-	            blobBuiler.getBlob mimeString
-		
 		getAnimationFrame: -> 
-        
+	    
 	        return window.requestAnimationFrame || window.webkitRequestAnimationFrame || 
 	        window.mozRequestAnimationFrame || window.oRequestAnimationFrame || 
 	        window.msRequestAnimationFrame || (callback, element) ->
 	          return window.setTimeout(callback, 1000 / 60)
+
 )

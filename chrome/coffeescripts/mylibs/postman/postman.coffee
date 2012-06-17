@@ -6,9 +6,9 @@ define([
 
 	pub =
 
-		init: (iframe) ->
+		init: (r) ->
 
-			recipient = iframe
+			recipient = r
 
 			window.onmessage = (event) ->
 
@@ -19,5 +19,5 @@ define([
 			$.subscribe "/postman/deliver", (message, address, block) ->
 			
 				message.address = address
-				recipient.contentWindow.webkitPostMessage message, "*", block
+				recipient.webkitPostMessage message, "*", block
 )

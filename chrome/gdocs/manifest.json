@@ -1,0 +1,29 @@
+{
+  "name": "Google Drive Uploader",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "platform_app": true,
+  "oauth2": {
+    "client_id": "887983258847.apps.googleusercontent.com",
+    "scopes": [
+      "https://docs.google.com/feeds/",
+      "https://docs.googleusercontent.com/",
+      "https://spreadsheets.google.com/feeds/",
+      "https://www.googleapis.com/auth/drive.file"
+    ]
+  },
+  "icons": {
+    "16": "img/google_drive_logo.jpg",
+    "128": "img/google_drive_logo.jpg"
+  },
+  "background": {
+    "scripts": ["js/background.js"]
+  },
+  "permissions": [
+    "experimental",
+    "windows",
+    "https://docs.google.com/feeds/",
+    "https://docs.googleusercontent.com/",
+    "https://spreadsheets.google.com/feeds/"
+  ]
+}

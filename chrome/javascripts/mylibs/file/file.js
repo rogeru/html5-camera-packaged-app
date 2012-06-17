@@ -36,13 +36,16 @@
       console.log('Error: ' + msg);
       return $.publish("/msg/error", ["Access to the file system could not be obtained."]);
     };
-    save = function(name, blob) {
+    save = function(name, dataURL) {
+      var blob;
+      console.log("Saving file " + name);
+      blob = utils.toBlob(dataURL);
       return fileSystem.root.getFile(name, {
         create: true
       }, function(fileEntry) {
         return fileEntry.createWriter(function(fileWriter) {
           fileWriter.onwriteend = function(e) {
-            return console.info("save completed");
+            return $.publish("/notify/show", ["File Saved!", "The picture was saved succesfully", false]);
           };
           fileWriter.onerror = function(e) {
             return console.error("Write failed: " + e.toString());
@@ -56,7 +59,11 @@
         create: false
       }, function(fileEntry) {
         return fileEntry.remove(function() {
-          return $.publish("/file/deleted/" + name);
+          return $.publish("/postman/deliver", [
+            {
+              message: ""
+            }, "/file/deleted/" + name
+          ]);
         }, errorHandler);
       }, errorHandler);
     };
@@ -70,9 +77,10 @@
         fs.root.getDirectory("MyPictures", {
           create: true
         }, function(dirEntry) {
-          var animation, dirReader, entries;
+          var animation, dirReader, entries, files;
           myPicturesDir = dirEntry;
           entries = [];
+          files = [];
           dirReader = fs.root.createReader();
           animation = {
             effects: "zoomIn fadeIn",
@@ -81,38 +89,43 @@
           };
           read = function() {
             return dirReader.readEntries(function(results) {
-              var entry, _i, _j, _len, _len2, _results;
-              if (!results.length) {
-                entries.sort(compare);
-                _results = [];
-                for (_i = 0, _len = entries.length; _i < _len; _i++) {
-                  entry = entries[_i];
-                  _results.push((function() {
-                    var img;
-                    img = new Image();
-                    img.src = entry.toURL();
-                    return img.onload = function() {
-                      var dataURL;
-                      dataURL = img.toDataURL();
-                      return $.publish("/postman/deliver", [
-                        {
-                          message: {
-                            name: entry.name,
-                            image: dataURL
-                          }
-                        }, "/pictures/create", []
-                      ]);
-                    };
-                  })());
-                }
-                return _results;
-              } else {
-                for (_j = 0, _len2 = results.length; _j < _len2; _j++) {
-                  entry = results[_j];
-                  if (entry.isFile) entries.push(entry);
-                }
-                return read();
+              var entry, readFile, _i, _len;
+              for (_i = 0, _len = results.length; _i < _len; _i++) {
+                entry = results[_i];
+                if (entry.isFile) entries.push(entry);
               }
+              readFile = function(i) {
+                var name;
+                entry = entries[i];
+                if (entry.isFile) {
+                  name = entry.name;
+                  return entry.file(function(file) {
+                    var reader;
+                    reader = new FileReader();
+                    reader.onloadend = function(e) {
+                      var strip;
+                      if (name.substring(0, 1) === "p") strip = true;
+                      files.push({
+                        name: name,
+                        image: this.result,
+                        strip: strip
+                      });
+                      if (files.length === entries.length) {
+                        files.sort(compare);
+                        return $.publish("/postman/deliver", [
+                          {
+                            message: files
+                          }, "/pictures/bulk", []
+                        ]);
+                      } else {
+                        return readFile(++i);
+                      }
+                    };
+                    return reader.readAsDataURL(file);
+                  });
+                }
+              };
+              if (entries.length > 0) return readFile(0);
             });
           };
           return read();

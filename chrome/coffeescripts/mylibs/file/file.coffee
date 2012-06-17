@@ -43,7 +43,12 @@ define([
 
     $.publish("/msg/error", ["Access to the file system could not be obtained."])    
 
-  save = (name, blob) ->
+  save = (name, dataURL) ->
+
+        console.log "Saving file #{name}"
+
+        # convert the incoming image into a blob for storage
+        blob = utils.toBlob(dataURL)
 
         fileSystem.root.getFile name,  create: true, (fileEntry) ->
 
@@ -51,7 +56,7 @@ define([
 
             fileWriter.onwriteend = (e) ->
 
-                console.info "save completed"
+              $.publish "/notify/show", [ "File Saved!", "The picture was saved succesfully", false ]
 
             fileWriter.onerror = (e) ->
 
@@ -67,7 +72,7 @@ define([
 
         fileEntry.remove ->
 
-            $.publish("/file/deleted/#{name}")
+            $.publish "/postman/deliver", [ { message: "" }, "/file/deleted/#{name}" ]
 
         , errorHandler
 
@@ -89,6 +94,8 @@ define([
         myPicturesDir = dirEntry
 
         entries = []
+        files = []
+        
         dirReader = fs.root.createReader()
         animation = effects: "zoomIn fadeIn", show: true, duration: 1000
 
@@ -96,32 +103,51 @@ define([
 
           dirReader.readEntries (results) ->
 
-            if not results.length
+            # get a count of how many files we are expecting by adding them to an array
+            # if they are of type 'file'
+            for entry in results  
+              if entry.isFile
+                entries.push(entry)
 
-              entries.sort(compare)
+            readFile = (i) ->
 
-              for entry in entries
+              entry = entries[i]
 
-                do ->
-                  
-                  img = new Image()
-                  img.src = entry.toURL()
-                  
-                  img.onload = ->
+              if entry.isFile
 
-                    dataURL = img.toDataURL()
+                name = entry.name
 
-                    $.publish "/postman/deliver", [ { message: { name: entry.name, image: dataURL } }, "/pictures/create", [] ]
+                entry.file (file) ->
 
-            else
+                    reader = new FileReader()
 
-              for entry in results
+                    reader.onloadend = (e) ->
 
-                if entry.isFile
+                      # if this is a photostrip, we need to deliver it as such.
+                      if name.substring(0, 1) == "p"
+                        strip = true
 
-                  entries.push entry
+                      # we are going to add this to an array of files to be sent over.  They need to display in the same order everytime
+                      # in order to do that we need to collect them here by checking the length of the array we are building against the length
+                      # of the array that is holding the file entries.  Once they are the same, we know we have them all and we can sort by name
+                      # which is the timestamp, and send them down to the app.
+                      files.push({ name: name, image: this.result, strip: strip })
 
-              read()
+                      if files.length == entries.length
+                        
+                        # sort the files array by name
+                        files.sort(compare)
+
+                        # send it down to the app
+                        $.publish "/postman/deliver", [ { message: files }, "/pictures/bulk", [] ]
+
+                      else
+                        readFile(++i)
+
+                    reader.readAsDataURL(file)
+
+            if entries.length > 0
+              readFile(0)
 
         read()
 

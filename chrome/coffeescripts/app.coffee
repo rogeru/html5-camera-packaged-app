@@ -2,8 +2,11 @@ define([
 	'mylibs/postman/postman'
 	'mylibs/utils/utils'
 	'mylibs/file/file'
+	'mylibs/intents/intents'
+	'mylibs/share/share'
+	'mylibs/notify/notify'
 	
-], (postman, utils, file) ->
+], (postman, utils, file, intents, share, notify) ->
 	
 	'use strict'
 
@@ -38,23 +41,44 @@ define([
 	pub = 
 		init: ->
 
+			#initialize notifications
+			notify.init()
+
+			# initialize sharing
+			share.init()
+
 			# initialize utils
 			utils.init()
 
-			# cue up the postman!
-			postman.init(iframe)
+			# intialize intents
+			intents.init()
 
 			# get the files
 			file.init()
 
-			# subscribe to events
-			$.subscribe "/app/ready", ->
+			# cue up the postman!
+			postman.init(iframe.contentWindow)
 
-				# get the currently saved files
-				$.publish "/file/read", []
+			# get the currently saved files
+			$.publish "/file/read", []
 
-				# start the camera
-				navigator.webkitGetUserMedia { video: true }, hollaback, errback
+			# start the camera
+			navigator.webkitGetUserMedia { video: true }, hollaback, errback
 
-			
+			# chrome.experimental.app.onLaunched.addListener(-> 
+  				
+  	# 			onWindowLoaded = (win) -> 
+
+  	# 				# cue up the postman!
+  	# 				# postman.init(win)
+
+  	# 				# get the currently saved files
+  	# 				$.publish "/file/read", []
+
+  	# 				# start the camera
+  	# 				navigator.webkitGetUserMedia { video: true }, hollaback, errback
+
+  	# 			win = chrome.appWindow.create('chrome/app/index.html', { width: 900, height: 700 }, onWindowLoaded)
+
+			# )
 )
