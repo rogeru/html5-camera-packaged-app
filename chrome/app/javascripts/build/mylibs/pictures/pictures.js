@@ -17,7 +17,14 @@
       } else {
         callback = function() {
           $img.attr("src", arguments[0]);
-          return file.save(message.name, arguments[0]);
+          return $.publish("/postman/deliver", [
+            {
+              message: {
+                name: message.name,
+                image: arguments[0]
+              }
+            }, "/file/save"
+          ]);
         };
         $img.addClass("pointer");
         $img.on("click", function() {

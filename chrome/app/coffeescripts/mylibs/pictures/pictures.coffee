@@ -33,7 +33,7 @@ define([
 			# this callback is used to set the img source from the customize window
 			callback = ->
 				$img.attr "src", arguments[0] 
-				file.save message.name, arguments[0]
+				$.publish "/postman/deliver", [{ message: { name: message.name, image: arguments[0] } }, "/file/save"]
 
 			# give the image a pointer mouse and attach a click event
 			$img.addClass("pointer")
