@@ -49,9 +49,9 @@
           {
             message: {
               name: name,
-              image: $img[0]
+              image: $img.attr("src")
             }
-          }, "/file/save"
+          }, "/file/download"
         ]);
       });
       $div.on("click", ".intent", function() {

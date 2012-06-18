@@ -52,7 +52,7 @@ define([
 
 		# add the source to the download link
 		$div.on("click", ".download", ->
-        	$.publish "/postman/deliver", [{ message: { name: name, image: $img[0] } }, "/file/save"]
+        	$.publish "/postman/deliver", [{ message: { name: name, image: $img.attr("src") } }, "/file/download"]
 		)	
 
 		$div.on("click", ".intent", ->

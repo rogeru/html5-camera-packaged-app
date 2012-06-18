@@ -1,7 +1,7 @@
 (function() {
 
   define(['mylibs/utils/utils'], function(utils) {
-    var blobBuiler, compare, destroy, errorHandler, fileSystem, myPicturesDir, pub, read, save;
+    var blobBuiler, compare, destroy, download, errorHandler, fileSystem, myPicturesDir, pub, read, save;
     window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
     fileSystem = {};
     myPicturesDir = {};
@@ -33,20 +33,17 @@
         default:
           msg = 'Unknown Error';
       }
-      console.log('Error: ' + msg);
-      return $.publish("/msg/error", ["Access to the file system could not be obtained."]);
+      $.publish("/notify/show", ["File Error", msg, true]);
+      return $.publish("/notify/show", ["File Access Denied", "Access to the file system could not be obtained.", false]);
     };
     save = function(name, dataURL) {
       var blob;
-      console.log("Saving file " + name);
       blob = utils.toBlob(dataURL);
       return fileSystem.root.getFile(name, {
         create: true
       }, function(fileEntry) {
         return fileEntry.createWriter(function(fileWriter) {
-          fileWriter.onwriteend = function(e) {
-            return $.publish("/notify/show", ["File Saved!", "The picture was saved succesfully", false]);
-          };
+          fileWriter.onwriteend = function(e) {};
           fileWriter.onerror = function(e) {
             return console.error("Write failed: " + e.toString());
           };
@@ -59,6 +56,7 @@
         create: false
       }, function(fileEntry) {
         return fileEntry.remove(function() {
+          $.publish("/notify/show", ["File Deleted!", "The picture was deleted successfully", false]);
           return $.publish("/postman/deliver", [
             {
               message: ""
@@ -66,6 +64,23 @@
           ]);
         }, errorHandler);
       }, errorHandler);
+    };
+    download = function(name, dataURL) {
+      var blob;
+      blob = utils.toBlob(dataURL);
+      return chrome.fileSystem.chooseFile({
+        type: "saveFile"
+      }, function(fileEntry) {
+        return fileEntry.createWriter(function(fileWriter) {
+          fileWriter.onwriteend = function(e) {
+            return $.publish("/notify/show", ["File Saved", "The picture was saved succesfully", false]);
+          };
+          fileWriter.onerror = function(e) {
+            return $.publish("/notify/show", ["File Save Failed", "There was an error saving the file", false]);
+          };
+          return fileWriter.write(blob);
+        });
+      });
     };
     read = function() {
       var success;
@@ -103,12 +118,10 @@
                     var reader;
                     reader = new FileReader();
                     reader.onloadend = function(e) {
-                      var strip;
-                      if (name.substring(0, 1) === "p") strip = true;
                       files.push({
                         name: name,
                         image: this.result,
-                        strip: strip
+                        strip: false
                       });
                       if (files.length === entries.length) {
                         files.sort(compare);
@@ -141,8 +154,11 @@
         $.subscribe("/file/delete", function(message) {
           return destroy(message.name);
         });
-        return $.subscribe("/file/read", function(message) {
+        $.subscribe("/file/read", function(message) {
           return read();
+        });
+        return $.subscribe("/file/download", function(message) {
+          return download(message.name, message.image);
         });
       }
     };

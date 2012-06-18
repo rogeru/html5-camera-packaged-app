@@ -1,7 +1,7 @@
 (function() {
   var __hasProp = Object.prototype.hasOwnProperty;
 
-  define(['libs/jquery/jquery', 'libs/kendo/kendo', 'text!mylibs/customize/views/customize.html', 'libs/webgl/glfx.min'], function($, kendo, template) {
+  define(['text!mylibs/customize/views/customize.html', 'libs/webgl/glfx.min'], function(template) {
     var $window, callback, canvas, customizeEffect, oldImage, pub, texture, viewModel, webgl;
     $window = {};
     webgl = fx.canvas();

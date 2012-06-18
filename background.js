@@ -4,7 +4,7 @@ chrome.experimental.app.onLaunched.addListener(function() {
   	console.log(win)
   }
 
-  var win = chrome.appWindow.create('chrome/main.html', { 
+  var win = chrome.appWindow.create('main.html', { 
   	width: 1024, 
   	height: 870,
   	minWidth:900,

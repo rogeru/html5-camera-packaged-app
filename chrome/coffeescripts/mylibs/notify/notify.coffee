@@ -12,7 +12,7 @@ define([
 				close = ->
 					notification.close()
 
-				notification = webkitNotifications.createNotification 'icon_16.png', title, body
+				notification = webkitNotifications.createNotification '16.png', title, body
 
 				if not sticky
 					setTimeout close, 3000

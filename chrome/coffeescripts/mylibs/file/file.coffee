@@ -38,33 +38,30 @@ define([
       else
         msg = 'Unknown Error'
 
-    console.log('Error: ' + msg);
+    $.publish "/notify/show", [ "File Error", msg, true ]
 
-
-    $.publish("/msg/error", ["Access to the file system could not be obtained."])    
+    $.publish "/notify/show", [ "File Access Denied", "Access to the file system could not be obtained.", false ]
 
   save = (name, dataURL) ->
 
-        console.log "Saving file #{name}"
+    # convert the incoming image into a blob for storage
+    blob = utils.toBlob(dataURL)
 
-        # convert the incoming image into a blob for storage
-        blob = utils.toBlob(dataURL)
+    fileSystem.root.getFile name,  create: true, (fileEntry) ->
 
-        fileSystem.root.getFile name,  create: true, (fileEntry) ->
+      fileEntry.createWriter (fileWriter) ->
 
-          fileEntry.createWriter (fileWriter) ->
+        fileWriter.onwriteend = (e) ->
 
-            fileWriter.onwriteend = (e) ->
+          # $.publish "/notify/show", [ "File Saved!", "The picture was saved succesfully", false ]
 
-              $.publish "/notify/show", [ "File Saved!", "The picture was saved succesfully", false ]
+        fileWriter.onerror = (e) ->
 
-            fileWriter.onerror = (e) ->
+            console.error "Write failed: " + e.toString()
 
-                console.error "Write failed: " + e.toString()
-
-            fileWriter.write blob
-                
-        , errorHandler
+        fileWriter.write blob
+            
+    , errorHandler
 
   destroy = (name) ->
 
@@ -72,12 +69,30 @@ define([
 
         fileEntry.remove ->
 
+            $.publish "/notify/show", [ "File Deleted!", "The picture was deleted successfully", false ]
             $.publish "/postman/deliver", [ { message: "" }, "/file/deleted/#{name}" ]
 
         , errorHandler
 
       , errorHandler
 
+  download = (name, dataURL) ->
+
+    blob = utils.toBlob(dataURL)
+
+    chrome.fileSystem.chooseFile {type: "saveFile"}, (fileEntry) ->
+
+      fileEntry.createWriter (fileWriter) ->
+
+        fileWriter.onwriteend = (e) ->
+
+          $.publish "/notify/show", [ "File Saved", "The picture was saved succesfully", false ]
+
+        fileWriter.onerror = (e) ->
+
+          $.publish "/notify/show", [ "File Save Failed", "There was an error saving the file", false ]
+
+        fileWriter.write blob
 
   read = ->
 
@@ -123,15 +138,11 @@ define([
 
                     reader.onloadend = (e) ->
 
-                      # if this is a photostrip, we need to deliver it as such.
-                      if name.substring(0, 1) == "p"
-                        strip = true
-
                       # we are going to add this to an array of files to be sent over.  They need to display in the same order everytime
                       # in order to do that we need to collect them here by checking the length of the array we are building against the length
                       # of the array that is holding the file entries.  Once they are the same, we know we have them all and we can sort by name
                       # which is the timestamp, and send them down to the app.
-                      files.push({ name: name, image: this.result, strip: strip })
+                      files.push({ name: name, image: this.result, strip: false })
 
                       if files.length == entries.length
                         
@@ -169,6 +180,8 @@ define([
       $.subscribe "/file/read", (message) ->
         read()
 
-      
+      $.subscribe "/file/download", (message) ->
+        download message.name, message.image
+
 
 )

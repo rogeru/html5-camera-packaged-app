@@ -1,6 +1,6 @@
 (function() {
 
-  define(['libs/jquery/jquery', 'libs/kendo/kendo', 'libs/face/ccv', 'libs/face/face'], function($, kendo) {
+  define(['libs/face/ccv', 'libs/face/face'], function($, kendo) {
     var draw, face, faceCore, ghostBuffer, pub, timeStripsBuffer, trackFace, trackHead;
     face = {
       props: {
@@ -245,10 +245,8 @@
           filter: function(canvas, element) {
             var effect;
             effect = function() {
-              canvas.quadRotate(0, 0, 0, 0);
-              canvas.denoise(50);
-              canvas.ink(1);
-              return canvas.quadColor([1, .2, .1], [0, .8, 0], [.25, .5, 1], [.8, .8, .8]);
+              canvas.quadRotate(0, 1, 3, 2);
+              return canvas.quadRotate(2, 3, 1, 0);
             };
             return draw(canvas, element, effect);
           }

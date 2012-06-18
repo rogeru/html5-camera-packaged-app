@@ -1,9 +1,7 @@
 define([
-  'libs/jquery/jquery'	# lib/jquery/jquery
-  'libs/kendo/kendo' 	# lib/underscore/underscore
   'text!mylibs/customize/views/customize.html'
   'libs/webgl/glfx.min'
-], ($, kendo, template) ->
+], (template) ->
 	
 	$window = {}
 	webgl = fx.canvas()

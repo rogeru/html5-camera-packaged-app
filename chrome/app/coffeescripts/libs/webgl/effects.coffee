@@ -1,6 +1,4 @@
 define([
-  'libs/jquery/jquery', # lib/jquery/jquery
-  'libs/kendo/kendo'   # lib/underscore/underscore
   'libs/face/ccv'
   'libs/face/face'
 ], ($, kendo) ->
@@ -250,10 +248,9 @@ define([
                     kind: "webgl"
                     filter: (canvas, element) -> 
                         effect = ->
-                            canvas.quadRotate 0, 0, 0, 0
-                            canvas.denoise 50
-                            canvas.ink 1
-                            canvas.quadColor [ 1, .2, .1 ], [ 0, .8, 0 ], [ .25, .5, 1 ], [ .8, .8, .8 ]
+                            canvas.quadRotate 0, 1, 3, 2
+                            canvas.quadRotate 2, 3, 1, 0
+                            #canvas.quadColor [ 1, .2, .1 ], [ 0, .8, 0 ], [ .25, .5, 1 ], [ .8, .8, .8 ]
                         draw(canvas, element, effect) 
                 }
 

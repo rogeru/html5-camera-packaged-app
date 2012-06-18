@@ -11,6 +11,7 @@ text!mylibs/share/views/tweet.html
 text!mylibs/pictures/views/picture.html
 libs/face/ccv.js
 libs/face/face.js
+libs/webgl/effects.js
 text!mylibs/preview/views/selectPreview.html
 mylibs/utils/BlobBuilder.min.js
 mylibs/postman/postman.js
@@ -31,7 +32,6 @@ libs/kendo/kendo.js
 mylibs/camera/normalize.js
 mylibs/controls/controls.js
 mylibs/customize/customize.js
-libs/webgl/effects.js
 mylibs/utils/utils.js
 mylibs/file/file.js
 mylibs/share/share.js
