@@ -1,15 +1,16 @@
-cd chrome/app/javascripts
-
 echo "building/uglifying JS...."
-rm -r build
+rm -r src/app/javascripts/build
 
-r.js -o app.build.js
+r.js -o src/app/javascripts/app.build.js
 
 # echo "building/ugliying CSS..."
 # rm -r build
 # r.js -o app.build.js
 
-cd ../
+# move the build file to the extension
+cp src/app/javascripts/build/main.js extension/app/javascripts/main.js
 
 echo "compiling jade views and copying...."
-clientjade index.jade > javascripts/jade.js
+clientjade src/app/index.jade > extension/app/javascripts/jade.js
+
+say "DONE!"
