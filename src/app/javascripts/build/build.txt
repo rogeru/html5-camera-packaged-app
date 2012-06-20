@@ -2,13 +2,14 @@
 main.js
 ----------------
 libs/webgl/glfx.min.js
+mylibs/share/status.js
+mylibs/share/share.js
 text.js
 text!intro.html
 text!mylibs/photobooth/views/photostrip.html
 mylibs/photobooth/photobooth.js
 text!mylibs/customize/views/customize.html
 mylibs/customize/customize.js
-text!mylibs/share/views/tweet.html
 text!mylibs/pictures/views/picture.html
 libs/face/ccv.js
 libs/face/face.js
@@ -37,7 +38,6 @@ mylibs/camera/normalize.js
 mylibs/controls/controls.js
 mylibs/utils/utils.js
 mylibs/file/file.js
-mylibs/share/share.js
 mylibs/pictures/pictures.js
 mylibs/snapshot/snapshot.js
 mylibs/preview/preview.js

@@ -4,11 +4,15 @@
     var canvas, ctx, pub, toBlob, toDataURL;
     canvas = document.createElement("canvas");
     ctx = canvas.getContext("2d");
-    toDataURL = function(image) {
+    toDataURL = function(image, format) {
       canvas.width = image.width;
       canvas.height = image.height;
       ctx.drawImage(image, 0, 0, image.width, image.height);
-      return canvas.toDataURL(image);
+      if (format) {
+        return canvas.toDataURL(format)(image);
+      } else {
+        return canvas.toDataURL(image);
+      }
     };
     toBlob = function(dataURL) {
       var ab, blobBuilder, byteString, bytes, ia, mimeString, _i, _len;
@@ -30,8 +34,8 @@
     };
     return pub = {
       init: function() {
-        Image.prototype.toDataURL = function() {
-          return toDataURL(this);
+        Image.prototype.toDataURL = function(format) {
+          return toDataURL(this, format);
         };
         return Image.prototype.toBlob = function() {
           var dataURL;

@@ -55,9 +55,17 @@
         ]);
       });
       $div.on("click", ".intent", function() {
-        var intent;
-        intent = new WebKitIntent("http://webintents.org/share", "image/*", $img.attr("src"));
-        return window.navigator.startActivity(intent, function(data) {});
+        share.showStatus();
+        $.subscribe("/pictures/share/imgur", function(message) {
+          return share.closeStatus();
+        });
+        return $.publish("/postman/deliver", [
+          {
+            message: {
+              image: $img.attr("src")
+            }
+          }, "/share/imgur"
+        ]);
       });
       $div.on("click", ".trash", function() {
         $.subscribe("/file/deleted/" + message.name, function() {

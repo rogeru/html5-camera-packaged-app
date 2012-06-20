@@ -5,14 +5,17 @@ define([
 	canvas = document.createElement("canvas")
 	ctx = canvas.getContext("2d")
 
-	toDataURL = (image) ->
+	toDataURL = (image, format) ->
 
 		canvas.width = image.width
 		canvas.height = image.height
 
 		ctx.drawImage image, 0, 0, image.width, image.height
 
-		canvas.toDataURL image
+		if (format)
+			canvas.toDataURL(format) image
+		else
+			canvas.toDataURL image
 
 	toBlob = (dataURL) ->
 
@@ -41,9 +44,9 @@ define([
 	
 		init: ->
 	
-			Image.prototype.toDataURL = ->
+			Image.prototype.toDataURL = (format) ->
 
-				toDataURL(this)
+				toDataURL(this, format)
 
 			Image.prototype.toBlob = ->
 

@@ -1,10 +1,11 @@
 define([
   #'mylibs/utils/utils'
   'mylibs/share/gdrive'
+  'mylibs/share/imgur'
   'mylibs/share/resumableupload'
   'mylibs/share/util'
   'mylibs/share/gdocs'
-], (gdrive) ->
+], (gdrive, imgur) ->
 	
 	createFolder = (title) ->
 
@@ -17,9 +18,9 @@ define([
 
 			# gdrive.init()
 
-			# subscribe to events
-			# $.subscribe "/share/gdrive/upload", (blob) ->
-			# 	gdocs.upload(blob)
+			# subscribe to imgur share event
+			$.subscribe "/share/imgur", (message) ->
+				imgur.upload message.image
 
 			gdocs = new GDocs()
 
@@ -53,7 +54,6 @@ define([
 			 		contentType: 'application/json'
 			 		processData: false
 			 		data: JSON.stringify { "title": "Silver Rings", "mimeType": "application/vnd.google-app.folder" }
-
-
+				
 
 )

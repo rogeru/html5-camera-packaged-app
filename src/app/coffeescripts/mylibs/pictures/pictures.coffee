@@ -56,9 +56,15 @@ define([
 		)	
 
 		$div.on("click", ".intent", ->
-    		intent = new WebKitIntent("http://webintents.org/share", "image/*", $img.attr("src"))
-    		window.navigator.startActivity(intent, (data) ->)
-    		#$.publish "/postman/deliver", [ { message: { image: $img.attr("src") } }, "/intents/share" ]
+			#intent = new WebKitIntent("http://webintents.org/share", "image/*", $img.attr("src"))
+    		# window.navigator.startActivity(intent, (data) ->)
+    		share.showStatus()
+    		
+    		$.subscribe "/pictures/share/imgur", (message) ->
+    			share.closeStatus()
+
+    		$.publish "/postman/deliver", [ { message: { image: $img.attr("src") } }, "/share/imgur" ]
+			
 		)
 
 		$div.on "click", ".trash", ->

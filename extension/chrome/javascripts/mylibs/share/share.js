@@ -1,6 +1,6 @@
 (function() {
 
-  define(['mylibs/share/gdrive', 'mylibs/share/resumableupload', 'mylibs/share/util', 'mylibs/share/gdocs'], function(gdrive) {
+  define(['mylibs/share/gdrive', 'mylibs/share/imgur', 'mylibs/share/resumableupload', 'mylibs/share/util', 'mylibs/share/gdocs'], function(gdrive, imgur) {
     var createFolder, pub, upload;
     createFolder = function(title) {};
     upload = function(blob) {
@@ -9,6 +9,9 @@
     return pub = {
       init: function() {
         var gdocs;
+        $.subscribe("/share/imgur", function(message) {
+          return imgur.upload(message.image);
+        });
         gdocs = new GDocs();
         return gdocs.auth(function() {
           return $.ajax({

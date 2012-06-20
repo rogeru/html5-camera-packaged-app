@@ -2699,6 +2699,44 @@ return exports;
 
 define('libs/webgl/glfx.min',[], function(){});
 
+(function() {
+
+  define('mylibs/share/status',[], function() {
+    var $window;
+    $window = $("<div><img src='images/loading-image.gif' alt='loading...' /></div>").kendoWindow({
+      modal: true,
+      actions: {},
+      draggable: false,
+      title: false
+    }).data("kendoWindow").center();
+    return {
+      show: function() {
+        return $window.open();
+      },
+      close: function() {
+        return $window.close();
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+
+  define('mylibs/share/share',['mylibs/share/status'], function(status) {
+    var pub;
+    return pub = {
+      showStatus: function() {
+        return status.show();
+      },
+      closeStatus: function() {
+        return status.close();
+      }
+    };
+  });
+
+}).call(this);
+
 /*
  RequireJS text 1.0.6 Copyright (c) 2010-2011, The Dojo Foundation All Rights Reserved.
  Available via the MIT or new BSD license.
@@ -2924,8 +2962,6 @@ define('text!mylibs/customize/views/customize.html',[],function () { return '\n<
   });
 
 }).call(this);
-
-define('text!mylibs/share/views/tweet.html',[],function () { return '\n<div id="share">\n\t<div class="row">\n\t\t<div class="span6 brown">\n\t\t\t<div class="row centered no-margin">\n\t\t\t\t<div class="reflection">\n\t\t\t\t\t<img id="imageToShare" data-bind="attr: { src: src }" />\n\t\t\t\t</div>\n\t\t\t\t<div class="arrow_box">\n\t\t\t\t\t<textarea placeholder="Write Something Witty..." id="message" cols="60" rows="3"></textarea>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class="span4">\n\t\t\t<h3>Sharing Is Good!</h3>\n\t\t\t<button class="button" data-bind="events: { click: tweet }">Tweet</button>\n\t\t</div>\n\t</div>\n</div>';});
 
 define('text!mylibs/pictures/views/picture.html',[],function () { return '<div class="snapshot box">\n\t<div class="wrap">\n\t\t<img class="picture" src="${ image }" width="180" />\n\t</div>\n\t<div class="actions">\n\t\t<div class="share">\n\t\t\t<a class="download pointer" rel="Download"><img src="images/icons/glyphicons_200_download.png" /></a>\n\t\t\t<a class="intent pointer" rel="Twitter"><img src="images/icons/glyphicons_326_share.png" /></a>\n\t\t\t<a class="stamp pointer" rel="Stamp"><img src="images/icons/glyphicons_092_stamp.png" /></a>\n\t\t</div>\n\t\t<div class="delete">\n\t\t\t<a class="trash pointer" rel="Trash"><img src="images/icons/glyphicons_016_bin.png" /></a>\n\t\t</div>\n\t</div>\n</div>';});
 
@@ -4261,113 +4297,6 @@ define("libs/kendo/kendo.all.min", function(){});
 
 (function() {
 
-  define('mylibs/share/share',['libs/jquery/jquery', 'libs/kendo/kendo', 'mylibs/utils/utils', 'text!mylibs/share/views/tweet.html'], function($, kendo, utils, template) {
-    var $window, events, openCenteredWindow, pub, shareWindow, twitter_token, viewModel;
-    shareWindow = {};
-    twitter_token = "";
-    $window = {};
-    events = {};
-    viewModel = kendo.observable({
-      src: "",
-      twitter: false,
-      tweet: function() {
-        var callback;
-        callback = function() {
-          var blob, fd;
-          blob = utils.blobFromImg($("#imageToShare")[0]);
-          fd = new FormData();
-          fd.append("file", blob);
-          return $.ajax({
-            url: "share/tweet",
-            data: fd,
-            type: "POST",
-            processData: false,
-            contentType: false
-          });
-        };
-        return openCenteredWindow(null, callback);
-      }
-    });
-    openCenteredWindow = function(url, callback) {
-      var A, B, C, checkWindow, childWindow, intervalID, u, v, x, y, z;
-      y = 700;
-      C = window.screenX || 0;
-      B = C ? $(window).width() : screen.availWidth;
-      A = 520;
-      u = window.screenY || 0;
-      x = u ? $(window).height() : screen.availHeight;
-      v = C + (B - y) / 2;
-      z = u + (x - A) / 2;
-      childWindow = window.open("authenticate/twitter", "auth", "resizable=yes,toolbar=no,scrollbars=yes,status=no,width=" + y + ",height=" + A + ",left=" + v + ",top=" + z);
-      checkWindow = function() {
-        if (childWindow && childWindow.closed) {
-          window.clearInterval(intervalID);
-          window.APP.twitter = sessionStorage.getItem("twitter");
-          return callback();
-        }
-      };
-      return intervalID = window.setInterval(checkWindow, 500);
-    };
-    return pub = {
-      twitter_token: "",
-      tweet: function(src) {
-        viewModel.set("src", src);
-        return $window.open();
-      },
-      init: function() {
-        var $content;
-        $content = $(template);
-        $window = $content.kendoWindow({
-          visible: false,
-          modal: true,
-          title: "",
-          animation: {
-            open: {
-              effects: "slideIn:up fadeIn",
-              duration: 500
-            },
-            close: {
-              effects: "slide:up fadeOut",
-              duration: 500
-            }
-          }
-        }).data("kendoWindow").center();
-        kendo.bind($content, viewModel);
-        $.subscribe("/share/download", function($img) {
-          var img, src;
-          img = new Image();
-          img.src = $img.src;
-          src = utils.elToDataURI(img);
-          utils.saveImage(src);
-          return delete img;
-        });
-        $.subscribe("/share/tweet", function(src) {
-          var tweet;
-          template = kendo.template(tweet);
-          tweet = template({
-            src: src
-          });
-          return shareWindow.content(tweet).open().center();
-        });
-        $('#twitter-sign-in').click(function(e) {
-          openCenteredWindow("twitter");
-          return e.preventDefault();
-        });
-        return {
-          download: function(el) {
-            var dataURI;
-            dataURI = utils.elToDataURI(el);
-            return $("" + downloadView + " > button").data("uri", dataURI);
-          }
-        };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-
   define('mylibs/pictures/pictures',['mylibs/file/file', 'mylibs/share/share', 'text!mylibs/pictures/views/picture.html'], function(file, share, picture) {
     var $container, create, pub;
     $container = {};
@@ -4423,9 +4352,17 @@ define("libs/kendo/kendo.all.min", function(){});
         ]);
       });
       $div.on("click", ".intent", function() {
-        var intent;
-        intent = new WebKitIntent("http://webintents.org/share", "image/*", $img.attr("src"));
-        return window.navigator.startActivity(intent, function(data) {});
+        share.showStatus();
+        $.subscribe("/pictures/share/imgur", function(message) {
+          return share.closeStatus();
+        });
+        return $.publish("/postman/deliver", [
+          {
+            message: {
+              image: $img.attr("src")
+            }
+          }, "/share/imgur"
+        ]);
       });
       $div.on("click", ".trash", function() {
         $.subscribe("/file/deleted/" + message.name, function() {
