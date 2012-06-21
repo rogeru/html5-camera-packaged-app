@@ -162,6 +162,18 @@ define([
 
                     ds.page(1)
 
+            $container.on "click", ".back", ->
+
+                paused = true
+
+                if ds.page() == 1
+
+                    ds.page(ds.totalPages())
+
+                else
+
+                    ds.page(ds.page() - 1)
+
 
             ds.read()
                     

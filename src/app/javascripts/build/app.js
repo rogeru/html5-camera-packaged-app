@@ -1,10 +1,11 @@
 (function() {
 
-  define(['mylibs/camera/camera', 'mylibs/snapshot/snapshot', 'mylibs/photobooth/photobooth', 'mylibs/controls/controls', 'mylibs/customize/customize', 'mylibs/share/share', 'text!intro.html', 'mylibs/pictures/pictures', 'mylibs/preview/preview', 'mylibs/preview/selectPreview', 'mylibs/utils/utils', 'mylibs/postman/postman', 'mylibs/stamp/stamp', 'mylibs/modal/modal'], function(camera, snapshot, photobooth, controls, customize, share, intro, pictures, preview, selectPreview, utils, postman, stamp, modal) {
+  define(['mylibs/camera/camera', 'mylibs/snapshot/snapshot', 'mylibs/photobooth/photobooth', 'mylibs/controls/controls', 'mylibs/customize/customize', 'mylibs/share/share', 'text!intro.html', 'mylibs/pictures/pictures', 'mylibs/preview/preview', 'mylibs/preview/selectPreview', 'mylibs/utils/utils', 'mylibs/postman/postman', 'mylibs/stamp/stamp', 'mylibs/modal/modal', 'mylibs/assets/assets'], function(camera, snapshot, photobooth, controls, customize, share, intro, pictures, preview, selectPreview, utils, postman, stamp, modal, assets) {
     var pub;
     return pub = {
       init: function() {
         postman.init();
+        assets.init();
         utils.init();
         modal.init();
         $.subscribe('/camera/unsupported', function() {

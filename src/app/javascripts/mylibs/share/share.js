@@ -3,7 +3,7 @@
   define(['mylibs/share/status', 'text!mylibs/share/views/share.html'], function(status, share) {
     var $actions, $working, currentLink, links, modal, pub, viewModel;
     viewModel = kendo.observable({
-      src: null,
+      src: "images/placeholder.png",
       name: null,
       actions: "block",
       working: "none",

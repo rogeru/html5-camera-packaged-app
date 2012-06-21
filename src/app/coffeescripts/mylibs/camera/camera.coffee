@@ -1,10 +1,17 @@
 define([
-  'libs/jquery/jquery',	# lib/jquery/jquery
-  'libs/kendo/kendo', 	# lib/underscore/underscore
   'mylibs/camera/normalize'
   'mylibs/preview/selectPreview'
   'mylibs/preview/preview'
-], ($, kendo, normalize, selectPreview, preview) ->
+], (normalize, selectPreview, preview) ->
+
+    ###     Camera
+
+    The camera module takes care of getting the users media and drawing it to a canvas.
+    It also handles the coutdown that is intitiated
+
+    ###
+
+    # object level vars
 
     $counter = {}
     utils = {}
@@ -13,90 +20,46 @@ define([
 
     paused = false
 
-    setup = (callback) ->
-
-        videoDiv = document.createElement('div')
-        document.body.appendChild(videoDiv)
-
-        videoDiv.appendChild(pub.video)
-
-        videoDiv.setAttribute("style", "display:none;")
-        
-        # start the video
-        pub.video.play()
-        
-        pub.video.width = 200   
-        pub.video.height = 150
-        
-        # the camera is all started and ready
-        if callback then callback()
-
-
     turnOn = (callback, testing) ->
-	      
-        if window.HTML5CAMERA.IS_EXTENSION
-          
-            window.HTML5CAMERA.canvas = canvas
+      
+        # set a applicatoin level variable that is the canvas which contains
+        # the video feed drawn in a loop
+        window.HTML5CAMERA.canvas = canvas
             
-            $.subscribe "/camera/update", (message) ->
+        # subscribe to the '/camera/update' event. this is published in a draw
+        # loop at the extension level at the current framerate
+        $.subscribe "/camera/update", (message) ->
 
-                imgData = ctx.getImageData 0, 0, canvas.width, canvas.height
-                videoData = new Uint8ClampedArray(message.image)
-                imgData.data.set(videoData)
-
-                ctx.putImageData(imgData, 0, 0)
-
-            callback()
-
-        else
-
-	     
-    	    hollaback = (stream) ->
-
-                # create a video element and assign the WebRTC stream as its source
-                e = window.URL || window.webkitURL
-
-                pub.video.src = if e then e.createObjectURL(stream) else stream
-
-                # we have the stream
-                $(pub.video).attr("src", if (window.URL and window.URL.createObjectURL) then window.URL.createObjectURL(stream) else stream)
-                $(pub.video).attr("prop", if (window.URL and window.URL.createObjectURL) then window.URL.createObjectURL(stream) else stream)
-
-
-                setup(callback)
-
-        	errback = ->
-
-        		# webRTC is supported, but we did trying to get the stream
-        		console.log("Your thing is not a thing.")
+            # create a new image data object
+            imgData = ctx.getImageData 0, 0, canvas.width, canvas.height
             
-    	    
-    	    if navigator.getUserMedia
+            # convert the incoming message to a typed array
+            videoData = new Uint8ClampedArray(message.image)
+            
+            # set the iamge data equal to the typed array
+            imgData.data.set(videoData)
 
-                navigator.getUserMedia(normalize(
+            # draw the image data to the canvas
+            ctx.putImageData(imgData, 0, 0)
 
-                    video: true
-                    audio: false
-                
-                ), hollaback, errback)
-                
-    	    else
+        # execute the callback that happens when the camera successfully turns on
+        callback()
 
-         	    $.publish("/camera/unsupported")
-
-    countdown = ( num, hollaback ) ->
+    countdown = ( num, callback ) ->
         
         # get the counters element 
         counters = $counter.find("span")
+        
+        # determine the current count position
         index = counters.length - num
         
-        # countdown to 1 before taking the image. fadeout numbers along the way.
+        # countdown to 1 before executing the callback. fadeout numbers along the way.
         $(counters[index]).css("opacity", "1").animate( { opacity: .1 }, 1000, -> 
             if num > 1
                 num--
-                countdown( num, hollaback )
+                countdown( num, callback )
             else
-                hollaback()
+                callback()
         )
 
     pub =
@@ -109,19 +72,20 @@ define([
             pub.video = document.createElement("video")
             #pub.video.src = "burke.mp4"
 
+            # create a blank canvas element and set it's size
             canvas = document.createElement("canvas")
             canvas.width = 460
             canvas.height = 340
 
+            # get the canvas context for drawing and reading
             ctx = canvas.getContext("2d")
     		
     		# turn on the camera
             turnOn(callback, true)
             
+            # listen for the '/camera/countdown message and respond to the event'
             $.subscribe("/camera/countdown", ( num, hollaback ) ->
                 countdown(num, hollaback)
             )
 
-    			
-    	video: {}
 )

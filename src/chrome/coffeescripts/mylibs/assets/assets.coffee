@@ -8,17 +8,18 @@ define([
 		{
 			name: "glasses"
 			src: "chrome/images/glasses.png"
-			address: "/effects/props"
 		},
 		{
 			name: "horns"
 			src: "chrome/images/horns.png"
-			address: "/effects/props"
 		},
 		{
 			name: "hipster"
 			src: "chrome/images/hipster.png"
-			address: "/effects/props"
+		},
+		{
+			name: "google"
+			src: "chrome/images/glasses.png"
 		}
 	]
 
@@ -41,5 +42,5 @@ define([
 
 					# send the image data down in a post message
 					img.onload = ->
-						$.publish "/postman/deliver", [ { message: { name: asset.name, image: img.toDataURL() } }, asset.address ]
+						$.publish "/postman/deliver", [ { message: { name: asset.name, image: img.toDataURL() } }, "/assets/add" ]
 )

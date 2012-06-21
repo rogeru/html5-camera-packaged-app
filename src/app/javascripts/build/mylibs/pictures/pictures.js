@@ -12,20 +12,20 @@
       $div = $(html);
       $img = $div.find(".picture");
       message.name = message.name || new Date().getTime() + ".png";
+      callback = function() {
+        $img.attr("src", arguments[0]);
+        return $.publish("/postman/deliver", [
+          {
+            message: {
+              name: message.name,
+              image: arguments[0]
+            }
+          }, "/file/save"
+        ]);
+      };
       if (message.strip) {
         message.name = "p_" + message.name;
       } else {
-        callback = function() {
-          $img.attr("src", arguments[0]);
-          return $.publish("/postman/deliver", [
-            {
-              message: {
-                name: message.name,
-                image: arguments[0]
-              }
-            }, "/file/save"
-          ]);
-        };
         $img.addClass("pointer");
         $img.on("click", function() {
           return $.publish("/customize", [this, callback]);
@@ -72,7 +72,7 @@
         ]);
       });
       $div.on("click", ".stamp", function() {
-        return $.publish("/stamp/show", [$img.attr("src")]);
+        return $.publish("/stamp/show", [$img.attr("src"), callback]);
       });
       return $container.append($div);
     };

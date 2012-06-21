@@ -1,14 +1,8 @@
 (function() {
 
-  define(['libs/face/ccv', 'libs/face/face'], function() {
+  define(['mylibs/assets/assets', 'libs/face/ccv', 'libs/face/face'], function(assets) {
     var draw, face, faceCore, ghostBuffer, pub, timeStripsBuffer, trackFace, trackHead;
     face = {
-      props: {
-        glasses: new Image(),
-        horns: new Image(),
-        hipster: new Image(),
-        sombraro: new Image()
-      },
       backCanvas: document.createElement("canvas"),
       comp: [],
       lastCanvas: {},
@@ -387,19 +381,19 @@
           name: "In Disguise",
           kind: "face",
           filter: function(canvas, video) {
-            return trackFace(video, canvas, face.props.glasses, 0, 0, 1, 1);
+            return trackFace(video, canvas, assets.images.glasses, 0, 0, 1, 1);
           }
         }, {
           name: "Horns",
           kind: "face",
           filter: function(canvas, video) {
-            return trackHead(video, canvas, face.props.horns, 0, 25, 0, 0);
+            return trackHead(video, canvas, assets.images.horns, 0, 25, 0, 0);
           }
         }, {
           name: "Hipsterizer",
           kind: "face",
           filter: function(canvas, video) {
-            return trackFace(video, canvas, face.props.hipster, 0, 0, 1, 2.2);
+            return trackFace(video, canvas, assets.images.hipster, 0, 0, 1, 2.2);
           }
         }
       ]

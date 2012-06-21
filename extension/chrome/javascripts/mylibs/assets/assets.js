@@ -6,16 +6,16 @@
     assets = [
       {
         name: "glasses",
-        src: "chrome/images/glasses.png",
-        address: "/effects/props"
+        src: "chrome/images/glasses.png"
       }, {
         name: "horns",
-        src: "chrome/images/horns.png",
-        address: "/effects/props"
+        src: "chrome/images/horns.png"
       }, {
         name: "hipster",
-        src: "chrome/images/hipster.png",
-        address: "/effects/props"
+        src: "chrome/images/hipster.png"
+      }, {
+        name: "google",
+        src: "chrome/images/glasses.png"
       }
     ];
     return pub = {
@@ -35,7 +35,7 @@
                     name: asset.name,
                     image: img.toDataURL()
                   }
-                }, asset.address
+                }, "/assets/add"
               ]);
             };
           })(asset));

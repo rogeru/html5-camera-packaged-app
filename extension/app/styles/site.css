@@ -405,10 +405,11 @@ box-shadow: 10px 10px 5px #888;
 }
 
 .pallet {
-	width: 400px;
+	height: 85px;
+	width: 380px;
 	border-radius: 8px;
-	margin: 10px;
-	border: 1px solid #999;
+	padding: 10px;
+	border: 3px solid #999;
 }
 
 /* pallet and colors */
@@ -416,8 +417,8 @@ box-shadow: 10px 10px 5px #888;
 .pallet-item > span{
 	float: left;
 	border-radius: 50%;
-	width: 24px;
-	height: 24px;
+	width: 32px;
+	height: 32px;
 	margin: 5px;
 }
 
@@ -426,21 +427,9 @@ box-shadow: 10px 10px 5px #888;
 	box-shadow: 0 0 5px 5px #888;
 }
 
-.shadow {
+.selected {
 	-webkit-box-shadow: 0 0 5px 5px#888;
 	box-shadow: 0 0 5px 5px #888;
-}
-
-.pallet-item > .black {
-	background: rgba(0, 0, 0, 1)
-}
-
-.pallet-item > .blue {
-	background: rgba(30, 98, 244, .09)
-}
-
-.pallet-item > .red {
-	background: rgba(255, 0, 0, 1)
 }
 
 .share {

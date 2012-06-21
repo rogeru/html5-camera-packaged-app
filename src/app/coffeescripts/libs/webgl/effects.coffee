@@ -1,15 +1,10 @@
 define([
+  'mylibs/assets/assets'
   'libs/face/ccv'
   'libs/face/face'
-], () ->
+], (assets) ->
 
     face = {
-        
-        props: 
-            glasses: new Image()
-            horns: new Image()
-            hipster: new Image()
-            sombraro: new Image()
 
         backCanvas: document.createElement "canvas"
 
@@ -380,7 +375,7 @@ define([
                     kind: "face"
                     filter: (canvas, video) ->
 
-                        trackFace video, canvas, face.props.glasses, 0, 0, 1, 1
+                        trackFace video, canvas, assets.images.glasses, 0, 0, 1, 1
                         
                 }
 
@@ -389,7 +384,7 @@ define([
                     kind: "face"
                     filter: (canvas, video) ->
 
-                        trackHead video, canvas, face.props.horns, 0, 25, 0, 0
+                        trackHead video, canvas, assets.images.horns, 0, 25, 0, 0
                 }
 
                 
@@ -398,7 +393,7 @@ define([
                     kind: "face"
                     filter: (canvas, video) ->
 
-                        trackFace video, canvas, face.props.hipster, 0, 0, 1, 2.2
+                        trackFace video, canvas, assets.images.hipster, 0, 0, 1, 2.2
                 }
 
                 # {

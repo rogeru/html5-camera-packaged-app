@@ -13,7 +13,8 @@ define([
   'mylibs/postman/postman'
   'mylibs/stamp/stamp'
   'mylibs/modal/modal'
-], (camera, snapshot, photobooth, controls, customize, share, intro, pictures, preview, selectPreview, utils, postman, stamp, modal) ->
+  'mylibs/assets/assets'
+], (camera, snapshot, photobooth, controls, customize, share, intro, pictures, preview, selectPreview, utils, postman, stamp, modal, assets) ->
 	
 		pub = 
 		    
@@ -21,6 +22,9 @@ define([
 
 				# fire up the postman!
 				postman.init()
+
+				# start up the asset pipeline
+				assets.init()
 
 			    # all UI elements as modules must be created as instances here
 			    # in the application main controller file

@@ -9,6 +9,7 @@ define([
 	requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame
 
 	$window = {}
+	$activeBrush = null
 	canvas = {}
 	drawSafe = {}
 	stampX = 0
@@ -17,25 +18,32 @@ define([
 	bufferTexture = {}
 	stampTexture = {}
 	pixelsBetweenStamps = 0
+	callback = {}
 
 	viewModel = kendo.observable {
-		activeBrush: null
 
-		colors: pallet
-		
 		draw: (e) ->
 
-			$item = $(e.target)
+			if $activeBrush
+				$activeBrush.removeClass("selected")
 
-			rgba = $item.data("colors")
-			color = colors[rgba]
+			$activeBrush = $(e.target).addClass("selected")
+			
+			r = $activeBrush.data "r"
+			g = $activeBrush.data "g"
+			b = $activeBrush.data "b"
+			a = $activeBrush.data "a"
 
-			updateBrush()
+			updateBrush(r, g, b, a)
 
-			this.set("activeBrush", e.targetElement)
-			$(e.targetElement).css("border", "1px solid #fff")
+		yep: ->
 
-		save: ->
+			callback canvas.toDataURL()
+			$window.close()
+
+		nope: ->
+
+			$window.close()
 
 	}
 
@@ -51,18 +59,31 @@ define([
 	createBuffers = (length) ->
  		buffer.push canvas.texture(drawSafe)  while buffer.length < length
 
-	updateBrush = () ->
+	updateBrush = (red, green, blue, alpha) ->
 		# get = (name) ->
 		# 	parseFloat document.getElementById("options." + name).value
 		stampTexture = canvas.texture(createBlobBrush(
-			r: 255
-			g: 27
-			b: 145
-			a: 255
+			r: red 
+			g: green
+			b: blue 
+			a: alpha
 			radius: 5
 			fuzziness: 1
 		))
 		pixelsBetweenStamps = 5 / 4
+
+	updateStamp = (image) ->
+
+		stampTexture = canvas.texture(createBlobStamp(image))
+
+	createBlobStamp = (image) ->
+		stamp = document.createElement("canvas")
+		w = stamp.width = image.width
+		h = stamp.height = image.height
+		c = stamp.getContext("2d")
+		stamp.drawImage image, 0, 0, image.width, image.height
+
+		stamp
 
 	createBlobBrush = (options) ->
 		brush = document.createElement("canvas")
@@ -88,6 +109,7 @@ define([
 				y++
 			x++
 		c.putImageData data, 0, 0
+
 		brush	
 
 	setupMouse = ->
@@ -137,7 +159,9 @@ define([
 
 		init: ->
 
-			$content = $(stamp)
+			template = kendo.template(stamp)
+
+			$content = $(template(pallet))
 
 			# create a canvas for drawing to
 			drawSafe = document.createElement("canvas")
@@ -170,7 +194,9 @@ define([
 			kendo.bind($content, viewModel)
 
 			# listen to events
-			$.subscribe "/stamp/show", (src) ->
+			$.subscribe "/stamp/show", (src, saveFunction) ->
+
+				callback = saveFunction
 
 				oldImage = new Image()
 				oldImage.src = src
@@ -186,7 +212,9 @@ define([
 
 				bufferTexture = canvas.texture(texture.width(), texture.height())
 				bufferTexture.clear()
-				updateBrush()
+			
+				updateBrush(0,0,0,255)
+
 				setupMouse()
 				render()
 

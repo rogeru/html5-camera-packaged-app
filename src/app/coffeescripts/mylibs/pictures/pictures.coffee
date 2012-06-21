@@ -23,18 +23,18 @@ define([
 		# assign the picture a unique file name based on the current timestamp
 		message.name = message.name || new Date().getTime() + ".png"
 
+		# this is the generic callback used by the customize and stamp windows
+		callback = ->
+			$img.attr "src", arguments[0] 
+			$.publish "/postman/deliver", [{ message: { name: message.name, image: arguments[0] } }, "/file/save"]
+
 		# photostrips cannot be customzized. to tell the difference, prefix the
 		# file name with a p_		
 		if message.strip
 			message.name = "p_" + message.name
-		
 		# the image can be customized by clicking on it
 		else
 			# this callback is used to set the img source from the customize window
-			callback = ->
-				$img.attr "src", arguments[0] 
-				$.publish "/postman/deliver", [{ message: { name: message.name, image: arguments[0] } }, "/file/save"]
-
 			# give the image a pointer mouse and attach a click event
 			$img.addClass("pointer")
 			$img.on("click", -> $.publish("/customize", [ this, callback ]) )
@@ -73,7 +73,7 @@ define([
 			$.publish "/postman/deliver", [ { message: { name: message.name } }, "/file/delete" ]
 
 		$div.on "click", ".stamp", ->
-			$.publish "/stamp/show", [ $img.attr("src") ]
+			$.publish "/stamp/show", [ $img.attr("src"), callback ]
 
 		##### end action bar events
 

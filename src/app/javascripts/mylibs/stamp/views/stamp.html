@@ -11,17 +11,11 @@
 			</div>
 		</div>
 		<div class="span4">
+			<h3>Brushes</h3>
 			<div class="pallet">
-				<div class="pallet-item"><span data-stamp="red" data-bind="style: { backgroundColor: colors.black.css }, events: { click: draw }"></span></div>
-				<div class="pallet-item"><span data-stamp="black" data-bind="style: { backgroundColor: colors.red.css }, events: { click: draw }"></span></div>
-				<div class="pallet-item"><span></span></div>
-				<div class="pallet-item"><span></span></div>
-				<div class="pallet-item"><span></span></div>
-				<div class="pallet-item"><span></span></div>
-				<div class="pallet-item"><span></span></div>
-				<div class="pallet-item"><span></span></div>
-				<div class="pallet-item"><span></span></div>
-				<div class="pallet-item"><span></span></div>
+				# for (var i = 0; i < data.length; i++) { #
+					<div class="pallet-item"><span data-r="${ data[i].r }" data-g="${ data[i].g }" data-b="${ data[i].b }" data-a = "${ data[i].a }" style="background-color: ${ data[i].css() }" data-bind="events: { click: draw }" class="${ data[i].class() }"></span></div>
+				# } #
 			</div>
 		</div>
 	</div>

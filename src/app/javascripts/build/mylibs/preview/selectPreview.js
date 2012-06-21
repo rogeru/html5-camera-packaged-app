@@ -145,6 +145,14 @@
             return ds.page(1);
           }
         });
+        $container.on("click", ".back", function() {
+          paused = true;
+          if (ds.page() === 1) {
+            return ds.page(ds.totalPages());
+          } else {
+            return ds.page(ds.page() - 1);
+          }
+        });
         return ds.read();
       },
       pause: function() {

@@ -2,9 +2,10 @@
 
   define(['mylibs/stamp/colors', 'text!mylibs/stamp/views/stamp.html', 'libs/webgl/glfx'], function(pallet, stamp) {
     
-    var $window, bufferTexture, canvas, createBlobBrush, createBuffers, drawSafe, pixelsBetweenStamps, pub, render, requestAnimationFrame, setupMouse, stampTexture, stampX, stampY, texture, updateBrush, viewModel;
+    var $activeBrush, $window, bufferTexture, callback, canvas, createBlobBrush, createBlobStamp, createBuffers, drawSafe, pixelsBetweenStamps, pub, render, requestAnimationFrame, setupMouse, stampTexture, stampX, stampY, texture, updateBrush, updateStamp, viewModel;
     requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
     $window = {};
+    $activeBrush = null;
     canvas = {};
     drawSafe = {};
     stampX = 0;
@@ -13,19 +14,25 @@
     bufferTexture = {};
     stampTexture = {};
     pixelsBetweenStamps = 0;
+    callback = {};
     viewModel = kendo.observable({
-      activeBrush: null,
-      colors: pallet,
       draw: function(e) {
-        var $item, color, rgba;
-        $item = $(e.target);
-        rgba = $item.data("colors");
-        color = colors[rgba];
-        updateBrush();
-        this.set("activeBrush", e.targetElement);
-        return $(e.targetElement).css("border", "1px solid #fff");
+        var a, b, g, r;
+        if ($activeBrush) $activeBrush.removeClass("selected");
+        $activeBrush = $(e.target).addClass("selected");
+        r = $activeBrush.data("r");
+        g = $activeBrush.data("g");
+        b = $activeBrush.data("b");
+        a = $activeBrush.data("a");
+        return updateBrush(r, g, b, a);
       },
-      save: function() {}
+      yep: function() {
+        callback(canvas.toDataURL());
+        return $window.close();
+      },
+      nope: function() {
+        return $window.close();
+      }
     });
     render = function() {
       var thisTexture;
@@ -44,16 +51,28 @@
       }
       return _results;
     };
-    updateBrush = function() {
+    updateBrush = function(red, green, blue, alpha) {
       stampTexture = canvas.texture(createBlobBrush({
-        r: 255,
-        g: 27,
-        b: 145,
-        a: 255,
+        r: red,
+        g: green,
+        b: blue,
+        a: alpha,
         radius: 5,
         fuzziness: 1
       }));
       return pixelsBetweenStamps = 5 / 4;
+    };
+    updateStamp = function(image) {
+      return stampTexture = canvas.texture(createBlobStamp(image));
+    };
+    createBlobStamp = function(image) {
+      var c, h, w;
+      stamp = document.createElement("canvas");
+      w = stamp.width = image.width;
+      h = stamp.height = image.height;
+      c = stamp.getContext("2d");
+      stamp.drawImage(image, 0, 0, image.width, image.height);
+      return stamp;
     };
     createBlobBrush = function(options) {
       var brush, c, data, dx, dy, factor, h, i, length, w, x, y;
@@ -126,8 +145,9 @@
     };
     return pub = {
       init: function() {
-        var $content;
-        $content = $(stamp);
+        var $content, template;
+        template = kendo.template(stamp);
+        $content = $(template(pallet));
         drawSafe = document.createElement("canvas");
         canvas = fx.canvas();
         $content.find(".canvas").append(canvas);
@@ -153,8 +173,9 @@
           }
         }).data("kendoWindow").center();
         kendo.bind($content, viewModel);
-        return $.subscribe("/stamp/show", function(src) {
+        return $.subscribe("/stamp/show", function(src, saveFunction) {
           var ctx, oldImage;
+          callback = saveFunction;
           oldImage = new Image();
           oldImage.src = src;
           drawSafe.width = oldImage.width;
@@ -164,7 +185,7 @@
           texture = canvas.texture(drawSafe);
           bufferTexture = canvas.texture(texture.width(), texture.height());
           bufferTexture.clear();
-          updateBrush();
+          updateBrush(0, 0, 0, 255);
           setupMouse();
           render();
           return $window.open();

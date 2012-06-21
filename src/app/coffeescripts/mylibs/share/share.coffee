@@ -4,7 +4,7 @@ define([
 ], (status, share) ->
 
 	viewModel = kendo.observable
-		src: null
+		src: "images/placeholder.png"
 		name: null
 		actions: "block"
 		working: "none"
