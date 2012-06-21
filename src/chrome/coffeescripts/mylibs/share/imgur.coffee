@@ -6,9 +6,14 @@ define([
 	URL = "http://api.imgur.com/2/upload.json"
 	KEY = "c86d236c329f59e6143f010c7356983e"
 
+	success = ->
+		$.publish("/postman/deliver", [{ message: { success: true, message: "" } }, "/share/success" ] )
+
 	pub = 
 	
 		upload: (dataURL, callback) ->
+	
+			# setTimeout success, 2000
 
 			img = dataURL.split(',')[1]
 
@@ -21,7 +26,7 @@ define([
 				data: {
 					key: KEY
 					image: img
-					title: "testing"
+					title: "HTML5 Camera Photo"
 					type: "base64"
 				}
 				
@@ -34,8 +39,7 @@ define([
 				success: (data) ->
 
 					link = data.upload.links.imgur_page
-					window.open "https://twitter.com/intent/tweet?url=#{link}&hashtags=h5c"
-					
-					$.publish("/postman/deliver", [{ message: { success: true, message: "" } }, "/pictures/share/imgur" ] )
+
+					callback(link)
 
 )

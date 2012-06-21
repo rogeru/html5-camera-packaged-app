@@ -1,11 +1,12 @@
 (function() {
 
-  define(['libs/jquery/jquery', 'libs/kendo/kendo', 'mylibs/camera/camera', 'mylibs/snapshot/snapshot', 'mylibs/photobooth/photobooth', 'mylibs/controls/controls', 'mylibs/customize/customize', 'mylibs/file/file', 'mylibs/share/share', 'text!intro.html', 'mylibs/pictures/pictures', 'mylibs/preview/preview', 'mylibs/preview/selectPreview', 'mylibs/share/share', 'mylibs/utils/utils', 'mylibs/postman/postman', 'mylibs/stamp/stamp'], function($, kendo, camera, snapshot, photobooth, controls, customize, file, share, intro, pictures, preview, selectPreview, share, utils, postman, stamp) {
+  define(['mylibs/camera/camera', 'mylibs/snapshot/snapshot', 'mylibs/photobooth/photobooth', 'mylibs/controls/controls', 'mylibs/customize/customize', 'mylibs/share/share', 'text!intro.html', 'mylibs/pictures/pictures', 'mylibs/preview/preview', 'mylibs/preview/selectPreview', 'mylibs/utils/utils', 'mylibs/postman/postman', 'mylibs/stamp/stamp', 'mylibs/modal/modal'], function(camera, snapshot, photobooth, controls, customize, share, intro, pictures, preview, selectPreview, utils, postman, stamp, modal) {
     var pub;
     return pub = {
       init: function() {
         postman.init();
         utils.init();
+        modal.init();
         $.subscribe('/camera/unsupported', function() {
           return $('#pictures').append(intro);
         });
@@ -18,8 +19,8 @@
           controls.init("controls");
           customize.init();
           stamp.init();
+          share.init();
           pictures.init("pictures");
-          file.init(5000);
           return $.publish("/postman/deliver", [
             {
               message: ""

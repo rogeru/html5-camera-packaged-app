@@ -58,12 +58,10 @@ define([
 		$div.on("click", ".intent", ->
 			#intent = new WebKitIntent("http://webintents.org/share", "image/*", $img.attr("src"))
     		# window.navigator.startActivity(intent, (data) ->)
-    		share.showStatus()
+    		$.publish "/share/show", [ $img.attr("src"), message.name ]
     		
-    		$.subscribe "/pictures/share/imgur", (message) ->
-    			share.closeStatus()
-
-    		$.publish "/postman/deliver", [ { message: { image: $img.attr("src") } }, "/share/imgur" ]
+    		# $.subscribe "/pictures/share/imgur", (message) ->
+    		# 	share.closeStatus()
 			
 		)
 

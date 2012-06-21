@@ -2,8 +2,8 @@
   var __hasProp = Object.prototype.hasOwnProperty;
 
   define(['text!mylibs/customize/views/customize.html', 'libs/webgl/glfx.min'], function(template) {
-    var $window, callback, canvas, customizeEffect, oldImage, pub, texture, viewModel, webgl;
-    $window = {};
+    var callback, canvas, customizeEffect, modal, oldImage, pub, texture, viewModel, webgl;
+    modal = {};
     webgl = fx.canvas();
     oldImage = new Image();
     canvas = {};
@@ -89,10 +89,11 @@
       },
       yep: function() {
         callback(webgl.toDataURL());
-        return $window.close();
+        return modal.close();
       },
       nope: function() {
-        return $window.close();
+        kendo.bind($content, viewModel);
+        return modal.close();
       },
       reset: function() {
         this.set("effects.brightnessContrast.brightness.value", 0);
@@ -115,18 +116,18 @@
       ctx.drawImage(oldImage, 0, 0, oldImage.width, oldImage.height);
       texture = webgl.texture(canvas);
       webgl.draw(texture).update();
-      return $window.open().center();
+      return modal.center().open();
     };
     return pub = {
       init: function() {
         var $content;
+        $content = $(template);
         $.subscribe('/customize', function(sender, saveFunction) {
           return customizeEffect(sender, saveFunction);
         });
-        $content = $(template);
         canvas = document.createElement("canvas");
         $content.find(".canvas").append(webgl);
-        $window = $content.kendoWindow({
+        modal = $content.kendoWindow({
           visible: false,
           modal: true,
           title: "",
@@ -146,7 +147,7 @@
               duration: 500
             }
           }
-        }).data("kendoWindow").center();
+        }).data("kendoWindow");
         return kendo.bind($content, viewModel);
       }
     };

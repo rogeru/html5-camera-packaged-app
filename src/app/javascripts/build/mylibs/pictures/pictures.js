@@ -55,17 +55,7 @@
         ]);
       });
       $div.on("click", ".intent", function() {
-        share.showStatus();
-        $.subscribe("/pictures/share/imgur", function(message) {
-          return share.closeStatus();
-        });
-        return $.publish("/postman/deliver", [
-          {
-            message: {
-              image: $img.attr("src")
-            }
-          }, "/share/imgur"
-        ]);
+        return $.publish("/share/show", [$img.attr("src"), message.name]);
       });
       $div.on("click", ".trash", function() {
         $.subscribe("/file/deleted/" + message.name, function() {

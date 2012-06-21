@@ -77,7 +77,7 @@ define([
   	# 			onWindowLoaded = (win) -> 
 
   	# 				# cue up the postman!
-  	# 				# postman.init(win)
+  	# 				postman.init(win)
 
   	# 				# get the currently saved files
   	# 				$.publish "/file/read", []

@@ -3,7 +3,7 @@ define([
   'libs/webgl/glfx.min'
 ], (template) ->
 	
-	$window = {}
+	modal = {}
 	webgl = fx.canvas()
 	oldImage = new Image()
 	canvas = {}	
@@ -82,11 +82,12 @@ define([
 		yep: ->
 
 			callback(webgl.toDataURL())
-			$window.close()
+			modal.close()
 
 		nope: ->
 
-			$window.close()
+			kendo.bind($content, viewModel)
+			modal.close()
 
 		reset: ->
 
@@ -118,18 +119,18 @@ define([
 
 		webgl.draw(texture).update()
 
-		$window.open().center()
+		modal.center().open()
 
 	pub = 
 			
 		init: ->
 			
+			$content = $(template)
+
 			# subscribe to events
 			$.subscribe('/customize', ( sender, saveFunction ) ->
 				customizeEffect sender, saveFunction
 			)
-
-			$content = $(template)
 
 			canvas = document.createElement("canvas")
 
@@ -138,7 +139,10 @@ define([
 			# TODO: Something is wrong with the reflection. it custs the image in half.
 			#$(webgl).addClass("reflection")
 
-			$window = $content.kendoWindow
+			# modal.content($content)
+			# kendo.bind($content, viewModel)
+
+			modal = $content.kendoWindow
 				visible: false
 				modal: true
 				title: ""
@@ -153,7 +157,8 @@ define([
 					close:
 						effects: "slide:up fadeOut"
 						duration: 500
-			.data("kendoWindow").center()
+			.data("kendoWindow")
 
 			kendo.bind($content, viewModel)
+
 )

@@ -1,22 +1,19 @@
 define([
-  'libs/jquery/jquery' 	# lib/jquery/jquery
-  'libs/kendo/kendo' 	# lib/underscore/underscore
   'mylibs/camera/camera'
   'mylibs/snapshot/snapshot'
   'mylibs/photobooth/photobooth'
   'mylibs/controls/controls'
   'mylibs/customize/customize'
-  'mylibs/file/file'
   'mylibs/share/share'
   'text!intro.html'
   'mylibs/pictures/pictures'
   'mylibs/preview/preview'
   'mylibs/preview/selectPreview'
-  'mylibs/share/share'
   'mylibs/utils/utils'
   'mylibs/postman/postman'
   'mylibs/stamp/stamp'
-], ($, kendo, camera, snapshot, photobooth, controls, customize, file, share, intro, pictures, preview, selectPreview, share, utils, postman, stamp) ->
+  'mylibs/modal/modal'
+], (camera, snapshot, photobooth, controls, customize, share, intro, pictures, preview, selectPreview, utils, postman, stamp, modal) ->
 	
 		pub = 
 		    
@@ -30,6 +27,9 @@ define([
 
 		        # initalize the utils
 				utils.init()
+
+				# initialize the modal window
+				modal.init()
 				
 				$.subscribe('/camera/unsupported', ->
 				    $('#pictures').append(intro)
@@ -61,13 +61,12 @@ define([
 					# initialize the stamping window
 					stamp.init()
 
+					# initialize the sharing window
+					share.init()
+
 					# initialize the pictures pane. we can show that safely without
 					# waiting on the rest of the UI or access to video
 					pictures.init "pictures"
-
-					# initialize the file system. this will read in any files that
-					# we have saved, or grant initial access for storage
-					file.init 5000
 
 					# we are done loading the app. have the postman deliver that msg.
 					$.publish "/postman/deliver", [ { message: ""}, "/app/ready" ]

@@ -2,9 +2,19 @@
 
   define([], function() {
     'strict mode';
-    var KEY, URL, pub;
+    var KEY, URL, pub, success;
     URL = "http://api.imgur.com/2/upload.json";
     KEY = "c86d236c329f59e6143f010c7356983e";
+    success = function() {
+      return $.publish("/postman/deliver", [
+        {
+          message: {
+            success: true,
+            message: ""
+          }
+        }, "/share/success"
+      ]);
+    };
     return pub = {
       upload: function(dataURL, callback) {
         var img;
@@ -15,7 +25,7 @@
           data: {
             key: KEY,
             image: img,
-            title: "testing",
+            title: "HTML5 Camera Photo",
             type: "base64"
           },
           dataType: "json",
@@ -32,15 +42,7 @@
           success: function(data) {
             var link;
             link = data.upload.links.imgur_page;
-            window.open("https://twitter.com/intent/tweet?url=" + link + "&hashtags=h5c");
-            return $.publish("/postman/deliver", [
-              {
-                message: {
-                  success: true,
-                  message: ""
-                }
-              }, "/pictures/share/imgur"
-            ]);
+            return callback(link);
           }
         });
       }

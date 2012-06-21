@@ -27,15 +27,6 @@
    "https://ssl.gstatic.com/",
    "https://www.googleapis.com/drive/v1/files"
  ],
- "intents": {
-    "http://webintents.org/pick": [
-      {
-        "type": ["image/*"],
-        "href": "chrome/main.html",
-        "title" : "Take Picture With HTML5 Camera",
-        "disposition" : "window"
-      }]
-  },
   "sandbox": {
     "pages": [ "app/index.html" ]
   },

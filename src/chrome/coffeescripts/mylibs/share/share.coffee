@@ -6,11 +6,6 @@ define([
   'mylibs/share/util'
   'mylibs/share/gdocs'
 ], (gdrive, imgur) ->
-	
-	createFolder = (title) ->
-
-	upload = (blob) ->
-		gdocs.upload blob
 
 	pub = 
 
@@ -19,10 +14,27 @@ define([
 			# gdrive.init()
 
 			# subscribe to imgur share event
-			$.subscribe "/share/imgur", (message) ->
-				imgur.upload message.image
+			$.subscribe "/share/twitter", (message) ->
+				callback = ->
+					link = arguments[0]
+					window.open "https://twitter.com/intent/tweet?url=#{link}&hashtags=h5c"
+					$.publish("/postman/deliver", [{ message: { success: true, link: link } }, "/share/success" ] )
+				if not message.link
+					imgur.upload message.image, callback
+				else
+					callback(message.link)
 
-			gdocs = new GDocs()
+			$.subscribe "/share/google", (message) ->
+				callback = ->
+					link = arguments[0]
+					window.open "https://plus.google.com/share?url=#{link}"
+					$.publish("/postman/deliver", [{ message: { success: true, link: link } }, "/share/success" ] )
+				if not message.link
+					imgur.upload message.image, callback
+				else
+					callback(message.link)
+
+			# gdocs = new GDocs()
 
 			# getDocs = ->
 
@@ -43,17 +55,17 @@ define([
 
 			# 		error: ->
 
-			gdocs.auth ->
+			# gdocs.auth ->
 
-			 	$.ajax 
-			 		url: "https://www.googleapis.com/drive/v1/files"
-			 		type: "POST"
-			 		headers: {
-						"Authorization": "Bearer #{gdocs.accessToken}"
-			 		},
-			 		contentType: 'application/json'
-			 		processData: false
-			 		data: JSON.stringify { "title": "Silver Rings", "mimeType": "application/vnd.google-app.folder" }
+			#  	$.ajax 
+			#  		url: "https://www.googleapis.com/drive/v1/files"
+			#  		type: "POST"
+			#  		headers: {
+			# 			"Authorization": "Bearer #{gdocs.accessToken}"
+			#  		},
+			#  		contentType: 'application/json'
+			#  		processData: false
+			 		# data: JSON.stringify { "title": "Silver Rings", "mimeType": "application/vnd.google-app.folder" }
 				
 
 )

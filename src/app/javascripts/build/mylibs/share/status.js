@@ -2,7 +2,9 @@
 
   define([], function() {
     var $window;
-    $window = $("<div><img src='images/loading-image.gif' alt='loading...' /></div>").kendoWindow({
+    $window = $("<div style='text-align: center'><img src='images/loading-image.gif' alt='loading...' /></div>").kendoWindow({
+      width: 100,
+      height: 100,
       modal: true,
       actions: {},
       draggable: false,

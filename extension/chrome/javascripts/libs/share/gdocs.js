@@ -61,7 +61,7 @@ GDocs.prototype.auth = function(opt_callback) {
       opt_callback && opt_callback();
     });
   } catch(e) {
-    log(e);
+    console.log(e);
   }
 };
 
