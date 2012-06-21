@@ -1,11 +1,21 @@
 define([
-  'mylibs/file/file'
   'mylibs/share/share'
   'text!mylibs/pictures/views/picture.html'
-], (file, share, picture) ->
+], (share, picture) ->
 	
+	###		Pictures
+
+	The pictures module handles the creation of the actual images and adding them
+	to the right-hand side of the app.  It also responds to all actions taken on images
+	by either clicking on the image itself, or on the action bar below each pic
+
+	###
+
+	# object level vars
+
 	$container = {}
 
+	# the main function that creates the image and handles all the events
 	create = (message) ->
 		
 		# get the template
@@ -65,13 +75,25 @@ define([
 			
 		)
 
+		# delete the image from the files system and UI
 		$div.on "click", ".trash", ->
+			# respond to the event that the image has been removed
+			# from the file system
 			$.subscribe "/file/deleted/#{message.name}", ->
+
+				# remove the object from the UI
 				$div.remove()
+				
+				# re-arrange all the images
 				$container.masonry "reload"
+				
+				# unsubcribe from this event as the object is deleted. forevermore.
 				$.unsubscribe "file/deleted/#{message.name}"
+			
+			# dispatch the command to delete the image
 			$.publish "/postman/deliver", [ { message: { name: message.name } }, "/file/delete" ]
 
+		# open the stamping window
 		$div.on "click", ".stamp", ->
 			$.publish "/stamp/show", [ $img.attr("src"), callback ]
 
@@ -102,10 +124,5 @@ define([
 			$.subscribe "/pictures/bulk", (message) ->
 				for file in message
 					create(file)
-				
-
-		reload: ->
-
-			$container.masonry("reload")
 	
 )

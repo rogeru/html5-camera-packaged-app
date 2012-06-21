@@ -1,7 +1,6 @@
 define([
-  'mylibs/share/status'
   'text!mylibs/share/views/share.html'
-], (status, share) ->
+], (share) ->
 
 	viewModel = kendo.observable
 		src: "images/placeholder.png"
@@ -75,13 +74,5 @@ define([
     		modal.content $content
 
     		modal.show()
-
-        showStatus: ->
-
-            status.show()
-
-        closeStatus: ->
-
-            status.close()
             
 )

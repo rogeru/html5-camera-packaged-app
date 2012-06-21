@@ -2,9 +2,18 @@ define([
   'text!mylibs/photobooth/views/photostrip.html'
 ], (photostrip) ->
 
+	### Photostrip
+
+	Handles creation of photostrips by stitching separate photos together
+
+	###
+
+	# object level vars
+
 	images = []
 	canvas = {}
 
+	# creates a photostrip by drawing a series of images to a long canvas
 	createStrip = (counter, images, ctx, width, height) ->
 
 	    image = new Image()
@@ -35,11 +44,13 @@ define([
 
 	        else
 
+	        	# recursive call to create the next image in the set
 	            createStrip(++counter, images, ctx, width, height)
 				
-	
+	# everything under tbhis is public
 	pub = 
 		
+		# constructor that is called when the module is intialized in app.js
 		init: ( width, height ) ->
 			
 			# create a canvas for stitching the images together. make

@@ -1,6 +1,12 @@
 (function() {
 
-  define(['mylibs/file/file', 'mylibs/share/share', 'text!mylibs/pictures/views/picture.html'], function(file, share, picture) {
+  define(['mylibs/share/share', 'text!mylibs/pictures/views/picture.html'], function(share, picture) {
+    /*		Pictures
+    
+    	The pictures module handles the creation of the actual images and adding them
+    	to the right-hand side of the app.  It also responds to all actions taken on images
+    	by either clicking on the image itself, or on the action bar below each pic
+    */
     var $container, create, pub;
     $container = {};
     create = function(message) {
@@ -95,9 +101,6 @@
           }
           return _results;
         });
-      },
-      reload: function() {
-        return $container.masonry("reload");
       }
     };
   });

@@ -2854,30 +2854,6 @@ return exports;
 
 define("libs/webgl/glfx.min", function(){});
 
-(function() {
-
-  define('mylibs/share/status',[], function() {
-    var $window;
-    $window = $("<div style='text-align: center'><img src='images/loading-image.gif' alt='loading...' /></div>").kendoWindow({
-      width: 100,
-      height: 100,
-      modal: true,
-      actions: {},
-      draggable: false,
-      title: false
-    }).data("kendoWindow").center();
-    return {
-      show: function() {
-        return $window.open();
-      },
-      close: function() {
-        return $window.close();
-      }
-    };
-  });
-
-}).call(this);
-
 /*
  RequireJS text 1.0.6 Copyright (c) 2010-2011, The Dojo Foundation All Rights Reserved.
  Available via the MIT or new BSD license.
@@ -2897,6 +2873,10 @@ define('text!mylibs/photobooth/views/photostrip.html',[],function () { return '<
 (function() {
 
   define('mylibs/photobooth/photobooth',['text!mylibs/photobooth/views/photostrip.html'], function(photostrip) {
+    /* Photostrip
+    
+    	Handles creation of photostrips by stitching separate photos together
+    */
     var canvas, createStrip, images, pub;
     images = [];
     canvas = {};
@@ -3105,7 +3085,7 @@ define('text!mylibs/share/views/share.html',[],function () { return '<div id="sh
 
 (function() {
 
-  define('mylibs/share/share',['mylibs/share/status', 'text!mylibs/share/views/share.html'], function(status, share) {
+  define('mylibs/share/share',['text!mylibs/share/views/share.html'], function(share) {
     var $actions, $working, currentLink, links, modal, pub, viewModel;
     viewModel = kendo.observable({
       src: "images/placeholder.png",
@@ -3212,14 +3192,7 @@ define('text!mylibs/share/views/share.html',[],function () { return '<div id="sh
         var $content;
         $content = $(share);
         modal.content($content);
-        return modal.show()({
-          showStatus: function() {
-            return status.show();
-          },
-          closeStatus: function() {
-            return status.close();
-          }
-        });
+        return modal.show();
       }
     };
   });
@@ -3227,6 +3200,169 @@ define('text!mylibs/share/views/share.html',[],function () { return '<div id="sh
 }).call(this);
 
 define('text!mylibs/pictures/views/picture.html',[],function () { return '<div class="snapshot box">\n\t<div class="wrap">\n\t\t<img class="picture" src="${ image }" width="180" />\n\t</div>\n\t<div class="actions">\n\t\t<div class="share">\n\t\t\t<a class="download pointer" rel="Download"><img src="images/icons/glyphicons_200_download.png" /></a>\n\t\t\t<a class="intent pointer" rel="Twitter"><img src="images/icons/glyphicons_326_share.png" /></a>\n\t\t\t<a class="stamp pointer" rel="Stamp"><img src="images/icons/glyphicons_092_stamp.png" /></a>\n\t\t</div>\n\t\t<div class="delete">\n\t\t\t<a class="trash pointer" rel="Trash"><img src="images/icons/glyphicons_016_bin.png" /></a>\n\t\t</div>\n\t</div>\n</div>';});
+
+(function() {
+
+  define('mylibs/pictures/pictures',['mylibs/share/share', 'text!mylibs/pictures/views/picture.html'], function(share, picture) {
+    /*		Pictures
+    
+    	The pictures module handles the creation of the actual images and adding them
+    	to the right-hand side of the app.  It also responds to all actions taken on images
+    	by either clicking on the image itself, or on the action bar below each pic
+    */
+    var $container, create, pub;
+    $container = {};
+    create = function(message) {
+      var $div, $img, callback, html, template;
+      template = kendo.template(picture);
+      html = template({
+        image: message.image
+      });
+      $div = $(html);
+      $img = $div.find(".picture");
+      message.name = message.name || new Date().getTime() + ".png";
+      callback = function() {
+        $img.attr("src", arguments[0]);
+        return $.publish("/postman/deliver", [
+          {
+            message: {
+              name: message.name,
+              image: arguments[0]
+            }
+          }, "/file/save"
+        ]);
+      };
+      if (message.strip) {
+        message.name = "p_" + message.name;
+      } else {
+        $img.addClass("pointer");
+        $img.on("click", function() {
+          return $.publish("/customize", [this, callback]);
+        });
+      }
+      if (message.save) {
+        $.publish("/postman/deliver", [
+          {
+            message: {
+              name: message.name,
+              image: message.image
+            }
+          }, "/file/save"
+        ]);
+      }
+      $img.load(function() {
+        return $container.masonry("reload");
+      });
+      $div.on("click", ".download", function() {
+        return $.publish("/postman/deliver", [
+          {
+            message: {
+              name: name,
+              image: $img.attr("src")
+            }
+          }, "/file/download"
+        ]);
+      });
+      $div.on("click", ".intent", function() {
+        return $.publish("/share/show", [$img.attr("src"), message.name]);
+      });
+      $div.on("click", ".trash", function() {
+        $.subscribe("/file/deleted/" + message.name, function() {
+          $div.remove();
+          $container.masonry("reload");
+          return $.unsubscribe("file/deleted/" + message.name);
+        });
+        return $.publish("/postman/deliver", [
+          {
+            message: {
+              name: message.name
+            }
+          }, "/file/delete"
+        ]);
+      });
+      $div.on("click", ".stamp", function() {
+        return $.publish("/stamp/show", [$img.attr("src"), callback]);
+      });
+      return $container.append($div);
+    };
+    return pub = {
+      init: function(containerId) {
+        $container = $("#" + containerId);
+        $container.masonry();
+        $.subscribe("/pictures/reload", function() {
+          return pub.reload();
+        });
+        $.subscribe("/pictures/create", function(message) {
+          return create(message);
+        });
+        return $.subscribe("/pictures/bulk", function(message) {
+          var file, _i, _len, _results;
+          _results = [];
+          for (_i = 0, _len = message.length; _i < _len; _i++) {
+            file = message[_i];
+            _results.push(create(file));
+          }
+          return _results;
+        });
+      }
+    };
+  });
+
+}).call(this);
+
+(function() {
+
+  define('mylibs/snapshot/snapshot',['libs/jquery/jquery', 'libs/kendo/kendo', 'mylibs/pictures/pictures'], function($, kendo, effects, filters, snapshot, utils, file) {
+    var $container, create, develop, polaroid, preview, pub, svg;
+    polaroid = false;
+    preview = {};
+    $container = {};
+    svg = [];
+    create = function(src) {
+      var animation;
+      animation = {
+        effects: "slideIn:down fadeIn",
+        show: true,
+        duration: 1000
+      };
+      return $.publish("/pictures/create", [
+        {
+          image: src,
+          name: null,
+          photoStrip: false,
+          save: true
+        }
+      ]);
+    };
+    develop = function(opacity) {
+      if (opacity < 1) {
+        opacity = opacity + .01;
+        $image.css("opacity", opacity);
+      } else {
+        $.unsubscribe("/shake/beta");
+        $.unsubscribe("/shake/gamma");
+      }
+      return opacity;
+    };
+    return pub = {
+      init: function(sender, container) {
+        preview = sender;
+        $container = $("#" + container);
+        $.subscribe("/polaroid/change", function(e) {
+          if (e.currentTarget.checked) {
+            return polaroid = true;
+          } else {
+            return polaroid = false;
+          }
+        });
+        return $.subscribe("/snapshot/create", function(src) {
+          return create(src);
+        });
+      }
+    };
+  });
+
+}).call(this);
 
 if (parallable === undefined) {
 	var parallable = function (file, funct) {
@@ -3740,321 +3876,6 @@ define("mylibs/utils/BlobBuilder.min", function(){});
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
           return window.setTimeout(callback, 1000 / 60);
         };
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-
-  define('mylibs/file/file',['libs/jquery/jquery', 'libs/kendo/kendo', 'mylibs/utils/utils'], function($, kendo, utils) {
-    var blobBuiler, compare, errorHandler, fileSystem, isApp, myPicturesDir, pub;
-    window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
-    fileSystem = {};
-    myPicturesDir = {};
-    blobBuiler = {};
-    isApp = false;
-    compare = function(a, b) {
-      if (a.name < b.name) return -1;
-      if (a.name > b.name) return 1;
-      return 0;
-    };
-    errorHandler = function(e) {
-      var msg;
-      msg = '';
-      switch (e.code) {
-        case FileError.QUOTA_EXCEEDED_ERR:
-          msg = 'QUOTA_EXCEEDED_ERR';
-          break;
-        case FileError.NOT_FOUND_ERR:
-          msg = 'NOT_FOUND_ERR';
-          break;
-        case FileError.SECURITY_ERR:
-          msg = 'SECURITY_ERR';
-          break;
-        case FileError.INVALID_MODIFICATION_ERR:
-          msg = 'INVALID_MODIFICATION_ERR';
-          break;
-        case FileError.INVALID_STATE_ERR:
-          msg = 'INVALID_STATE_ERR';
-          break;
-        default:
-          msg = 'Unknown Error';
-      }
-      console.log('Error: ' + msg);
-      return $.publish("/msg/error", ["Access to the file system could not be obtained."]);
-    };
-    return pub = {
-      init: function(kb) {
-        var success;
-        isApp = window.HTML5CAMERA.IS_EXTENSION;
-        window.webkitStorageInfo.requestQuota(PERSISTENT, kb * 1024, function(grantedBytes) {
-          return window.requestFileSystem(PERSISTENT, grantedBytes, success, errorHandler);
-        });
-        return success = function(fs) {
-          fs.root.getDirectory("MyPictures", {
-            create: true
-          }, function(dirEntry) {
-            var animation, dirReader, entries, read;
-            myPicturesDir = dirEntry;
-            entries = [];
-            dirReader = fs.root.createReader();
-            animation = {
-              effects: "zoomIn fadeIn",
-              show: true,
-              duration: 1000
-            };
-            read = function() {
-              return dirReader.readEntries(function(results) {
-                var entry, _i, _j, _len, _len2, _results;
-                if (!results.length) {
-                  entries.sort(compare);
-                  _results = [];
-                  for (_i = 0, _len = entries.length; _i < _len; _i++) {
-                    entry = entries[_i];
-                    _results.push($.publish("/pictures/create", [entry.toURL(), entry.name, false, false, null]));
-                  }
-                  return _results;
-                } else {
-                  for (_j = 0, _len2 = results.length; _j < _len2; _j++) {
-                    entry = results[_j];
-                    if (entry.isFile) entries.push(entry);
-                  }
-                  return read();
-                }
-              });
-            };
-            return read();
-          }, errorHandler);
-          return fileSystem = fs;
-        };
-      },
-      save: function(name, dataURI) {
-        var blob;
-        if (isApp) {
-          blob = utils.blobFromDataURI(dataURI);
-          return $.publish("/postman/deliver", [
-            {
-              message: {
-                name: name,
-                image: blob
-              }
-            }, "/file/save"
-          ]);
-        } else {
-          return fileSystem.root.getFile(name, {
-            create: true
-          }, function(fileEntry) {
-            return fileEntry.createWriter(function(fileWriter) {
-              fileWriter.onwriteend = function(e) {
-                return console.info("save completed");
-              };
-              fileWriter.onerror = function(e) {
-                return console.error("Write failed: " + e.toString());
-              };
-              blob = utils.blobFromDataURI(dataURI);
-              return fileWriter.write(blob);
-            });
-          }, errorHandler);
-        }
-      },
-      "delete": function(name) {
-        if (isApp) {
-          $.publish("/postman/deliver", [
-            {
-              message: {
-                name: name
-              }
-            }, "/file/destroy"
-          ]);
-        } else {
-
-        }
-        return fileSystem.root.getFile(name, {
-          create: false
-        }, function(fileEntry) {
-          return fileEntry.remove(function() {
-            return $.publish("/file/deleted/" + name);
-          }, errorHandler);
-        }, errorHandler);
-      },
-      download: function(img) {
-        var blob, canvas, ctx, dataURL, height, width;
-        width = img.width;
-        height = img.height;
-        img.removeAttribute("width", 0);
-        img.removeAttribute("height", 0);
-        canvas = document.createElement("canvas");
-        ctx = canvas.getContext("2d");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0, img.width, img.height);
-        dataURL = canvas.toDataURL();
-        img.width = width;
-        img.height = height;
-        blob = utils.blobFromDataURI(dataURL);
-        return saveAs(blob);
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-
-  define('mylibs/pictures/pictures',['mylibs/file/file', 'mylibs/share/share', 'text!mylibs/pictures/views/picture.html'], function(file, share, picture) {
-    var $container, create, pub;
-    $container = {};
-    create = function(message) {
-      var $div, $img, callback, html, template;
-      template = kendo.template(picture);
-      html = template({
-        image: message.image
-      });
-      $div = $(html);
-      $img = $div.find(".picture");
-      message.name = message.name || new Date().getTime() + ".png";
-      callback = function() {
-        $img.attr("src", arguments[0]);
-        return $.publish("/postman/deliver", [
-          {
-            message: {
-              name: message.name,
-              image: arguments[0]
-            }
-          }, "/file/save"
-        ]);
-      };
-      if (message.strip) {
-        message.name = "p_" + message.name;
-      } else {
-        $img.addClass("pointer");
-        $img.on("click", function() {
-          return $.publish("/customize", [this, callback]);
-        });
-      }
-      if (message.save) {
-        $.publish("/postman/deliver", [
-          {
-            message: {
-              name: message.name,
-              image: message.image
-            }
-          }, "/file/save"
-        ]);
-      }
-      $img.load(function() {
-        return $container.masonry("reload");
-      });
-      $div.on("click", ".download", function() {
-        return $.publish("/postman/deliver", [
-          {
-            message: {
-              name: name,
-              image: $img.attr("src")
-            }
-          }, "/file/download"
-        ]);
-      });
-      $div.on("click", ".intent", function() {
-        return $.publish("/share/show", [$img.attr("src"), message.name]);
-      });
-      $div.on("click", ".trash", function() {
-        $.subscribe("/file/deleted/" + message.name, function() {
-          $div.remove();
-          $container.masonry("reload");
-          return $.unsubscribe("file/deleted/" + message.name);
-        });
-        return $.publish("/postman/deliver", [
-          {
-            message: {
-              name: message.name
-            }
-          }, "/file/delete"
-        ]);
-      });
-      $div.on("click", ".stamp", function() {
-        return $.publish("/stamp/show", [$img.attr("src"), callback]);
-      });
-      return $container.append($div);
-    };
-    return pub = {
-      init: function(containerId) {
-        $container = $("#" + containerId);
-        $container.masonry();
-        $.subscribe("/pictures/reload", function() {
-          return pub.reload();
-        });
-        $.subscribe("/pictures/create", function(message) {
-          return create(message);
-        });
-        return $.subscribe("/pictures/bulk", function(message) {
-          var file, _i, _len, _results;
-          _results = [];
-          for (_i = 0, _len = message.length; _i < _len; _i++) {
-            file = message[_i];
-            _results.push(create(file));
-          }
-          return _results;
-        });
-      },
-      reload: function() {
-        return $container.masonry("reload");
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-
-  define('mylibs/snapshot/snapshot',['libs/jquery/jquery', 'libs/kendo/kendo', 'mylibs/pictures/pictures'], function($, kendo, effects, filters, snapshot, utils, file) {
-    var $container, create, develop, polaroid, preview, pub, svg;
-    polaroid = false;
-    preview = {};
-    $container = {};
-    svg = [];
-    create = function(src) {
-      var animation;
-      animation = {
-        effects: "slideIn:down fadeIn",
-        show: true,
-        duration: 1000
-      };
-      return $.publish("/pictures/create", [
-        {
-          image: src,
-          name: null,
-          photoStrip: false,
-          save: true
-        }
-      ]);
-    };
-    develop = function(opacity) {
-      if (opacity < 1) {
-        opacity = opacity + .01;
-        $image.css("opacity", opacity);
-      } else {
-        $.unsubscribe("/shake/beta");
-        $.unsubscribe("/shake/gamma");
-      }
-      return opacity;
-    };
-    return pub = {
-      init: function(sender, container) {
-        preview = sender;
-        $container = $("#" + container);
-        $.subscribe("/polaroid/change", function(e) {
-          if (e.currentTarget.checked) {
-            return polaroid = true;
-          } else {
-            return polaroid = false;
-          }
-        });
-        return $.subscribe("/snapshot/create", function(src) {
-          return create(src);
-        });
       }
     };
   });

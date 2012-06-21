@@ -1,6 +1,10 @@
 (function() {
 
   define(['text!mylibs/photobooth/views/photostrip.html'], function(photostrip) {
+    /* Photostrip
+    
+    	Handles creation of photostrips by stitching separate photos together
+    */
     var canvas, createStrip, images, pub;
     images = [];
     canvas = {};

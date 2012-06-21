@@ -1,6 +1,6 @@
 (function() {
 
-  define(['mylibs/share/status', 'text!mylibs/share/views/share.html'], function(status, share) {
+  define(['text!mylibs/share/views/share.html'], function(share) {
     var $actions, $working, currentLink, links, modal, pub, viewModel;
     viewModel = kendo.observable({
       src: "images/placeholder.png",
@@ -107,14 +107,7 @@
         var $content;
         $content = $(share);
         modal.content($content);
-        return modal.show()({
-          showStatus: function() {
-            return status.show();
-          },
-          closeStatus: function() {
-            return status.close();
-          }
-        });
+        return modal.show();
       }
     };
   });
