@@ -136,66 +136,18 @@ define("libs/kendo/kendo.all.min", function(){});
 
 (function() {
 
-  define('mylibs/camera/normalize',['libs/jquery/jquery', 'libs/kendo/kendo'], function($, kendo) {
-    var optionStyle, options;
-    window.URL || (window.URL = window.webkitURL || window.msURL || window.oURL);
-    navigator.getUserMedia || (navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
-    optionStyle = (function(win) {
-      var el, object, root, string;
-      if (!navigator.getUserMedia) return;
-      el = document.createElement("iframe");
-      root = document.body || document.documentElement;
-      string = true;
-      object = true;
-      return {
-        string: string,
-        object: object
-      };
-    })(window);
-    return options = function(opts) {
-      var o, stringOptions;
-      stringOptions = [];
-      if (optionStyle.string && !optionStyle.object) {
-        for (o in opts) {
-          if (opts[o] === true) stringOptions.push(o);
-        }
-        return stringOptions.join(" ");
-      } else {
-        return opts;
-      }
-    };
-  });
-
-}).call(this);
-
-(function() {
-
-  define('mylibs/controls/controls',['libs/jquery/jquery', 'libs/kendo/kendo'], function($, kendo) {
+  define('mylibs/controls/controls',[], function() {
     var pub;
     return pub = {
       init: function(controlsId) {
-        var $controls, previousAlpha, previousBeta, previousGamma;
+        var $controls;
         $controls = $("#" + controlsId);
         $controls.on("click", "button", function() {
           return $.publish($(this).data("event"));
         });
-        $controls.on("change", "input", function(e) {
+        return $controls.on("change", "input", function(e) {
           return $.publish("/polaroid/change", [e]);
         });
-        if (window.DeviceOrientationEvent || window.OrientationEvent) {
-          $(".polaroid-container").show();
-          previousAlpha = 0;
-          previousGamma = 0;
-          previousBeta = 0;
-          return window.addEventListener('deviceorientation', function(eventData) {
-            if ((eventData.gamma - previousGamma) > 40 || (previousGamma - eventData.gamma) > 40) {
-              $.publish("/shake/gamma");
-            }
-            if ((eventData.beta - previousBeta) > 40 || (previousBeta - eventData.beta) > 40) {
-              return $.publish("/shake/beta");
-            }
-          }, false);
-        }
       }
     };
   });
@@ -3000,11 +2952,14 @@ define('text!mylibs/customize/views/customize.html',[],function () { return '\n<
   var __hasProp = Object.prototype.hasOwnProperty;
 
   define('mylibs/customize/customize',['text!mylibs/customize/views/customize.html', 'libs/webgl/glfx.min'], function(template) {
-    var callback, canvas, customizeEffect, modal, oldImage, pub, texture, viewModel, webgl;
+    /*		Customize
+    
+    	Customize module deals with adding additional shaders to a taken image via sliders
+    */
+    var callback, customizeEffect, modal, oldImage, pub, texture, viewModel, webgl;
     modal = {};
     webgl = fx.canvas();
     oldImage = new Image();
-    canvas = {};
     texture = {};
     callback = {};
     viewModel = kendo.observable({
@@ -3090,7 +3045,6 @@ define('text!mylibs/customize/views/customize.html',[],function () { return '\n<
         return modal.close();
       },
       nope: function() {
-        kendo.bind($content, viewModel);
         return modal.close();
       },
       reset: function() {
@@ -3100,19 +3054,14 @@ define('text!mylibs/customize/views/customize.html',[],function () { return '\n<
         this.set("effects.vignette.amount.value", 0);
         this.set("effects.hueSaturation.hue.value", 0);
         this.set("effects.hueSaturation.saturation.value", 0);
-        return this.set("effects.noise.noise.vale", 0);
+        return this.set("effects.noise.noise.value", 0);
       }
     });
     customizeEffect = function(image, saveFunction) {
-      var ctx;
       viewModel.reset();
       oldImage.src = image.src;
       callback = saveFunction;
-      canvas.width = oldImage.width;
-      canvas.height = oldImage.height;
-      ctx = canvas.getContext("2d");
-      ctx.drawImage(oldImage, 0, 0, oldImage.width, oldImage.height);
-      texture = webgl.texture(canvas);
+      texture = webgl.texture(oldImage);
       webgl.draw(texture).update();
       return modal.center().open();
     };
@@ -3123,7 +3072,6 @@ define('text!mylibs/customize/views/customize.html',[],function () { return '\n<
         $.subscribe('/customize', function(sender, saveFunction) {
           return customizeEffect(sender, saveFunction);
         });
-        canvas = document.createElement("canvas");
         $content.find(".canvas").append(webgl);
         modal = $content.kendoWindow({
           visible: false,
@@ -4947,7 +4895,7 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
 
 (function() {
 
-  define('mylibs/camera/camera',['mylibs/camera/normalize', 'mylibs/preview/selectPreview', 'mylibs/preview/preview'], function(normalize, selectPreview, preview) {
+  define('mylibs/camera/camera',['mylibs/preview/selectPreview', 'mylibs/preview/preview'], function(selectPreview, preview) {
     /*     Camera
     
     The camera module takes care of getting the users media and drawing it to a canvas.

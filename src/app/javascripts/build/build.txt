@@ -14,7 +14,6 @@ libs/jquery/jquery.js
 libs/kendo/kendo.all.min.js
 order!libs/kendo/kendo.all.min
 libs/kendo/kendo.js
-mylibs/camera/normalize.js
 mylibs/controls/controls.js
 libs/webgl/glfx.min.js
 mylibs/share/status.js

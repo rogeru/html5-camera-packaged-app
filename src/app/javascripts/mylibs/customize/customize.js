@@ -2,11 +2,14 @@
   var __hasProp = Object.prototype.hasOwnProperty;
 
   define(['text!mylibs/customize/views/customize.html', 'libs/webgl/glfx.min'], function(template) {
-    var callback, canvas, customizeEffect, modal, oldImage, pub, texture, viewModel, webgl;
+    /*		Customize
+    
+    	Customize module deals with adding additional shaders to a taken image via sliders
+    */
+    var callback, customizeEffect, modal, oldImage, pub, texture, viewModel, webgl;
     modal = {};
     webgl = fx.canvas();
     oldImage = new Image();
-    canvas = {};
     texture = {};
     callback = {};
     viewModel = kendo.observable({
@@ -92,7 +95,6 @@
         return modal.close();
       },
       nope: function() {
-        kendo.bind($content, viewModel);
         return modal.close();
       },
       reset: function() {
@@ -102,19 +104,14 @@
         this.set("effects.vignette.amount.value", 0);
         this.set("effects.hueSaturation.hue.value", 0);
         this.set("effects.hueSaturation.saturation.value", 0);
-        return this.set("effects.noise.noise.vale", 0);
+        return this.set("effects.noise.noise.value", 0);
       }
     });
     customizeEffect = function(image, saveFunction) {
-      var ctx;
       viewModel.reset();
       oldImage.src = image.src;
       callback = saveFunction;
-      canvas.width = oldImage.width;
-      canvas.height = oldImage.height;
-      ctx = canvas.getContext("2d");
-      ctx.drawImage(oldImage, 0, 0, oldImage.width, oldImage.height);
-      texture = webgl.texture(canvas);
+      texture = webgl.texture(oldImage);
       webgl.draw(texture).update();
       return modal.center().open();
     };
@@ -125,7 +122,6 @@
         $.subscribe('/customize', function(sender, saveFunction) {
           return customizeEffect(sender, saveFunction);
         });
-        canvas = document.createElement("canvas");
         $content.find(".canvas").append(webgl);
         modal = $content.kendoWindow({
           visible: false,

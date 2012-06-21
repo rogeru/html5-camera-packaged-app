@@ -1,6 +1,6 @@
 (function() {
 
-  define(['mylibs/camera/normalize', 'mylibs/preview/selectPreview', 'mylibs/preview/preview'], function(normalize, selectPreview, preview) {
+  define(['mylibs/preview/selectPreview', 'mylibs/preview/preview'], function(selectPreview, preview) {
     /*     Camera
     
     The camera module takes care of getting the users media and drawing it to a canvas.

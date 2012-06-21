@@ -1,8 +1,7 @@
 define([
-  'mylibs/camera/normalize'
   'mylibs/preview/selectPreview'
   'mylibs/preview/preview'
-], (normalize, selectPreview, preview) ->
+], (selectPreview, preview) ->
 
     ###     Camera
 
