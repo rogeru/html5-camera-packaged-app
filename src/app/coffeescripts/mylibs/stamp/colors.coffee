@@ -2,6 +2,15 @@ define([
   
 ], () ->
 	
+	###		Colors
+
+	The colors class keeps a collection of 'colors' in an 
+	array. These colors are used to compose the pallet, and specify the
+	values needed by the drawing core to know what color to use
+
+	###
+
+	# base color 'class'
 	Color = (red, green, blue, alpha, cssClass) ->
 		r: red
 		g: green
@@ -12,8 +21,9 @@ define([
 		class: -> 
 			return cssClass
 
+	# array of colors
 	[
-		new Color 255, 255, 255, 255, "selected"
+		new Color 255, 255, 255, 255, "default selected"
 		new Color 0, 0, 0, 255
 		new Color 255, 0, 0, 255
 		new Color 255, 192, 0, 255
@@ -32,31 +42,5 @@ define([
 		new Color 82, 82, 82, 255
 		new Color 54, 54, 54, 255
 	]
-
-
-	# red: $.extend({}, color, { r: 255, g: 0, b: 0, a: 255 }) 
-	# darkRed: $.extend({}, color, { r: 192, g: 0, b: 0, a: 255 })
-	# black: $.extend({}, color, { r: 0, g: 0, b: 0, a: 255 })
-	# yellow: 
-
-
-		# colors: -> 
-
-		# 	$.extend(white, color, { r: 255, g: 255, b: 255, a: 255 })
-			
-
-		# 	red:
-		# 		r: 255
-		# 		g: 0
-		# 		b: 0
-		# 		a: 255
-		# 		css: "rgba(255,0,0,1)"
-
-		# 	black: 
-		# 		r: 0
-		# 		g: 0
-		# 		b: 0
-		# 		a: 255
-		# 		css: "rgba(0,0,0,1)"
 			
 )

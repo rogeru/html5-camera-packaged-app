@@ -1,9 +1,12 @@
 (function() {
 
-  define(['mylibs/stamp/colors', 'text!mylibs/stamp/views/stamp.html', 'libs/webgl/glfx'], function(pallet, stamp) {
+  define(['mylibs/utils/utils', 'mylibs/stamp/colors', 'text!mylibs/stamp/views/stamp.html', 'libs/webgl/glfx'], function(utils, pallet, stamp) {
     
-    var $activeBrush, $window, bufferTexture, callback, canvas, createBlobBrush, createBlobStamp, createBuffers, drawSafe, pixelsBetweenStamps, pub, render, requestAnimationFrame, setupMouse, stampTexture, stampX, stampY, texture, updateBrush, updateStamp, viewModel;
-    requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
+    /*		Stamp
+    
+    	This module handles drawing and stamping onto an image in a modal window
+    */
+    var $activeBrush, $window, bufferTexture, callback, canvas, createBlobBrush, createBlobStamp, drawSafe, pixelsBetweenStamps, pub, render, setupMouse, stampTexture, stampX, stampY, texture, updateBrush, updateStamp, viewModel;
     $window = {};
     $activeBrush = null;
     canvas = {};
@@ -41,15 +44,7 @@
       canvas.matrixWarp([-1, 0, 0, 1], false, true);
       canvas.blend(bufferTexture, 1);
       canvas.update();
-      return requestAnimationFrame(render);
-    };
-    createBuffers = function(length) {
-      var _results;
-      _results = [];
-      while (buffer.length < length) {
-        _results.push(buffer.push(canvas.texture(drawSafe)));
-      }
-      return _results;
+      return utils.getAnimationFrame()(render);
     };
     updateBrush = function(red, green, blue, alpha) {
       stampTexture = canvas.texture(createBlobBrush({
@@ -185,7 +180,8 @@
           texture = canvas.texture(drawSafe);
           bufferTexture = canvas.texture(texture.width(), texture.height());
           bufferTexture.clear();
-          updateBrush(0, 0, 0, 255);
+          updateBrush(255, 255, 255, 255);
+          $activeBrush = $content.find(".default");
           setupMouse();
           render();
           return $window.open();

@@ -1,6 +1,6 @@
 (function() {
 
-  require(['app'], function(app) {
+  require(['app', 'order!libs/jquery/plugins'], function(app) {
     return app.init();
   });
 

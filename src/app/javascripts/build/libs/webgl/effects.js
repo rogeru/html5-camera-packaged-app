@@ -243,6 +243,16 @@
             return draw(canvas, element, effect);
           }
         }, {
+          name: "Edge Work",
+          kind: "webgl",
+          filter: function(canvas, element) {
+            var effect;
+            effect = function() {
+              return canvas.edgeWork(2);
+            };
+            return draw(canvas, element, effect);
+          }
+        }, {
           name: "Color Half Tone",
           kind: "webgl",
           filter: function(canvas, element) {
@@ -258,7 +268,7 @@
           filter: function(canvas, element) {
             var effect;
             effect = function() {
-              return canvas.pixelate(canvas.width / 2, canvas.height / 2, 5);
+              return canvas.pixelate(canvas.width / 2, canvas.height / 2, 10);
             };
             return draw(canvas, element, effect);
           }

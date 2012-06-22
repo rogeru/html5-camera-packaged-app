@@ -249,6 +249,16 @@ define([
                 }
 
                 {
+                    name: "Edge Work"
+                    kind: "webgl"
+                    filter: (canvas, element) -> 
+                        effect = ->
+                           canvas.edgeWork(2)
+
+                        draw(canvas, element, effect)
+                }
+
+                {
                     name: "Color Half Tone"
                     kind: "webgl"
                     filter: (canvas, element) -> 
@@ -262,7 +272,7 @@ define([
                     kind: "webgl"
                     filter: (canvas, element) -> 
                         effect = ->
-                            canvas.pixelate canvas.width / 2,  canvas.height / 2, 5
+                            canvas.pixelate canvas.width / 2,  canvas.height / 2, 10
                         draw(canvas, element, effect)
                 }    
 
