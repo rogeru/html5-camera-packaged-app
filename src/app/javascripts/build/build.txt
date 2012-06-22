@@ -12,7 +12,6 @@ text!mylibs/share/views/share.html
 mylibs/share/share.js
 text!mylibs/pictures/views/picture.html
 mylibs/pictures/pictures.js
-mylibs/snapshot/snapshot.js
 libs/face/ccv.js
 libs/face/face.js
 text!mylibs/preview/views/selectPreview.html

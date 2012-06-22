@@ -111,7 +111,14 @@
           callback = function() {
             return $mask.fadeIn(50, function() {
               $mask.fadeOut(900);
-              $.publish("/snapshot/create", [currentCanvas.toDataURL()]);
+              $.publish("/pictures/create", [
+                {
+                  image: currentCanvas.toDataURL(),
+                  name: null,
+                  photoStrip: false,
+                  save: true
+                }
+              ]);
               return $.publish("/controls/enable");
             });
           };

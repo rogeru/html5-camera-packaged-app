@@ -16,12 +16,10 @@
       image.width = width;
       image.height = height;
       return image.onload = function() {
-        var imgData, src, y;
+        var src, y;
         y = (counter * height) + ((counter * 20) + 20);
         ctx.drawImage(image, 20, y, image.width, image.height);
         if (counter === images.length - 1) {
-          imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          ctx.putImageData(imgData, 0, 0);
           src = canvas.toDataURL();
           return $.publish("/pictures/create", [
             {
@@ -3155,60 +3153,6 @@ define('text!mylibs/pictures/views/picture.html',[],function () { return '<div c
 
 }).call(this);
 
-(function() {
-
-  define('mylibs/snapshot/snapshot',['mylibs/pictures/pictures'], function(effects, filters, snapshot, utils, file) {
-    var $container, create, develop, polaroid, preview, pub, svg;
-    polaroid = false;
-    preview = {};
-    $container = {};
-    svg = [];
-    create = function(src) {
-      var animation;
-      animation = {
-        effects: "slideIn:down fadeIn",
-        show: true,
-        duration: 1000
-      };
-      return $.publish("/pictures/create", [
-        {
-          image: src,
-          name: null,
-          photoStrip: false,
-          save: true
-        }
-      ]);
-    };
-    develop = function(opacity) {
-      if (opacity < 1) {
-        opacity = opacity + .01;
-        $image.css("opacity", opacity);
-      } else {
-        $.unsubscribe("/shake/beta");
-        $.unsubscribe("/shake/gamma");
-      }
-      return opacity;
-    };
-    return pub = {
-      init: function(sender, container) {
-        preview = sender;
-        $container = $("#" + container);
-        $.subscribe("/polaroid/change", function(e) {
-          if (e.currentTarget.checked) {
-            return polaroid = true;
-          } else {
-            return polaroid = false;
-          }
-        });
-        return $.subscribe("/snapshot/create", function(src) {
-          return create(src);
-        });
-      }
-    };
-  });
-
-}).call(this);
-
 if (parallable === undefined) {
 	var parallable = function (file, funct) {
 		parallable.core[funct.toString()] = funct().core;
@@ -4503,7 +4447,14 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
           callback = function() {
             return $mask.fadeIn(50, function() {
               $mask.fadeOut(900);
-              $.publish("/snapshot/create", [currentCanvas.toDataURL()]);
+              $.publish("/pictures/create", [
+                {
+                  image: currentCanvas.toDataURL(),
+                  name: null,
+                  photoStrip: false,
+                  save: true
+                }
+              ]);
               return $.publish("/controls/enable");
             });
           };
@@ -4961,7 +4912,7 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
 
 (function() {
 
-  define('app',['mylibs/camera/camera', 'mylibs/snapshot/snapshot', 'mylibs/photobooth/photobooth', 'mylibs/controls/controls', 'mylibs/customize/customize', 'mylibs/share/share', 'text!intro.html', 'mylibs/pictures/pictures', 'mylibs/preview/preview', 'mylibs/preview/selectPreview', 'mylibs/utils/utils', 'mylibs/postman/postman', 'mylibs/stamp/stamp', 'mylibs/modal/modal', 'mylibs/assets/assets'], function(camera, snapshot, photobooth, controls, customize, share, intro, pictures, preview, selectPreview, utils, postman, stamp, modal, assets) {
+  define('app',['mylibs/camera/camera', 'mylibs/photobooth/photobooth', 'mylibs/controls/controls', 'mylibs/customize/customize', 'mylibs/share/share', 'text!intro.html', 'mylibs/pictures/pictures', 'mylibs/preview/preview', 'mylibs/preview/selectPreview', 'mylibs/utils/utils', 'mylibs/postman/postman', 'mylibs/stamp/stamp', 'mylibs/modal/modal', 'mylibs/assets/assets'], function(camera, photobooth, controls, customize, share, intro, pictures, preview, selectPreview, utils, postman, stamp, modal, assets) {
     var pub;
     return pub = {
       init: function() {
@@ -4973,10 +4924,9 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
           return $('#pictures').append(intro);
         });
         return camera.init("countdown", function() {
-          preview.init("camera", camera.video);
-          selectPreview.init("previews", camera.canvas, camera.video);
+          preview.init("camera");
+          selectPreview.init("previews");
           selectPreview.draw();
-          snapshot.init(preview, "pictures");
           photobooth.init(460, 340);
           controls.init("controls");
           customize.init();

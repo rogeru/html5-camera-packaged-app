@@ -30,10 +30,10 @@ define([
 
 	        if counter == images.length - 1
 
-	            # get the image data from the canvas
-	            imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+	            # # get the image data from the canvas
+	            # imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
 	            
-	            ctx.putImageData(imgData, 0, 0)
+	            # ctx.putImageData(imgData, 0, 0)
 
 	            # save the image as a data url
 	            src = canvas.toDataURL()

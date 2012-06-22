@@ -152,7 +152,7 @@ define([
                     
                     $mask.fadeIn 50, -> 
                         $mask.fadeOut 900
-                        $.publish("/snapshot/create", [currentCanvas.toDataURL()])
+                        $.publish "/pictures/create", [ { image: currentCanvas.toDataURL() , name: null, photoStrip: false, save: true } ]
                         $.publish("/controls/enable")
 
                 # tell the camera to countdown

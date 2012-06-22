@@ -15,12 +15,10 @@
       image.width = width;
       image.height = height;
       return image.onload = function() {
-        var imgData, src, y;
+        var src, y;
         y = (counter * height) + ((counter * 20) + 20);
         ctx.drawImage(image, 20, y, image.width, image.height);
         if (counter === images.length - 1) {
-          imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          ctx.putImageData(imgData, 0, 0);
           src = canvas.toDataURL();
           return $.publish("/pictures/create", [
             {

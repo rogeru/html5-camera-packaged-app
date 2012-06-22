@@ -1,6 +1,5 @@
 define([
   'mylibs/camera/camera'
-  'mylibs/snapshot/snapshot'
   'mylibs/photobooth/photobooth'
   'mylibs/controls/controls'
   'mylibs/customize/customize'
@@ -14,7 +13,7 @@ define([
   'mylibs/stamp/stamp'
   'mylibs/modal/modal'
   'mylibs/assets/assets'
-], (camera, snapshot, photobooth, controls, customize, share, intro, pictures, preview, selectPreview, utils, postman, stamp, modal, assets) ->
+], (camera, photobooth, controls, customize, share, intro, pictures, preview, selectPreview, utils, postman, stamp, modal, assets) ->
 	
 		pub = 
 		    
@@ -42,22 +41,19 @@ define([
 				# initialize the camera
 				camera.init "countdown", ->
 
-					preview.init("camera", camera.video)
+					preview.init "camera"
 
 					# initialize the preview selection
-					selectPreview.init("previews", camera.canvas, camera.video)
+					selectPreview.init "previews"
 
 					# draw the video to the previews with webgl textures
 					selectPreview.draw()
-
-					# initialize snapshots 
-					snapshot.init(preview, "pictures")
 
 					# initialize photobooth
 					photobooth.init 460, 340
 
 					# initialize the buttons
-					controls.init("controls")
+					controls.init "controls"
 
 					# initialilize the customize window
 					customize.init()
@@ -75,5 +71,4 @@ define([
 					# we are done loading the app. have the postman deliver that msg.
 					$.publish "/postman/deliver", [ { message: ""}, "/app/ready" ]
 
-					#share.init()
 	)

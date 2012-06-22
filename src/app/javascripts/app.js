@@ -1,6 +1,6 @@
 (function() {
 
-  define(['mylibs/camera/camera', 'mylibs/snapshot/snapshot', 'mylibs/photobooth/photobooth', 'mylibs/controls/controls', 'mylibs/customize/customize', 'mylibs/share/share', 'text!intro.html', 'mylibs/pictures/pictures', 'mylibs/preview/preview', 'mylibs/preview/selectPreview', 'mylibs/utils/utils', 'mylibs/postman/postman', 'mylibs/stamp/stamp', 'mylibs/modal/modal', 'mylibs/assets/assets'], function(camera, snapshot, photobooth, controls, customize, share, intro, pictures, preview, selectPreview, utils, postman, stamp, modal, assets) {
+  define(['mylibs/camera/camera', 'mylibs/photobooth/photobooth', 'mylibs/controls/controls', 'mylibs/customize/customize', 'mylibs/share/share', 'text!intro.html', 'mylibs/pictures/pictures', 'mylibs/preview/preview', 'mylibs/preview/selectPreview', 'mylibs/utils/utils', 'mylibs/postman/postman', 'mylibs/stamp/stamp', 'mylibs/modal/modal', 'mylibs/assets/assets'], function(camera, photobooth, controls, customize, share, intro, pictures, preview, selectPreview, utils, postman, stamp, modal, assets) {
     var pub;
     return pub = {
       init: function() {
@@ -12,10 +12,9 @@
           return $('#pictures').append(intro);
         });
         return camera.init("countdown", function() {
-          preview.init("camera", camera.video);
-          selectPreview.init("previews", camera.canvas, camera.video);
+          preview.init("camera");
+          selectPreview.init("previews");
           selectPreview.draw();
-          snapshot.init(preview, "pictures");
           photobooth.init(460, 340);
           controls.init("controls");
           customize.init();
