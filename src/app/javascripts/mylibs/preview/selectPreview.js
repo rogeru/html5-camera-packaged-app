@@ -1,50 +1,48 @@
 (function() {
 
   define(['libs/webgl/effects', 'mylibs/utils/utils', 'text!mylibs/preview/views/selectPreview.html'], function(effects, utils, template) {
-    var $container, canvas, ctx, draw, frame, height, paused, previews, pub, update, video, webgl, width;
+    /*     Select Preview
+    
+    Select preview shows pages of 6 live previews using webgl effects
+    */
+    var $container, canvas, ctx, draw, frame, height, paused, previews, pub, webgl, width;
     paused = false;
     canvas = {};
     ctx = {};
-    video = {};
     previews = [];
     $container = {};
     webgl = fx.canvas();
     frame = 0;
     width = 200;
     height = 150;
-    update = function() {
-      var preview, _i, _len, _results;
+    draw = function() {
+      var preview, _i, _len;
       if (!paused) {
         ctx.drawImage(window.HTML5CAMERA.canvas, 0, 0, width, height);
-        _results = [];
         for (_i = 0, _len = previews.length; _i < _len; _i++) {
           preview = previews[_i];
           frame++;
           if (preview.kind === "face") {
-            _results.push(preview.filter(preview.canvas, canvas));
+            preview.filter(preview.canvas, canvas);
           } else {
-            _results.push(preview.filter(preview.canvas, canvas, frame));
+            preview.filter(preview.canvas, canvas, frame);
           }
         }
-        return _results;
       }
-    };
-    draw = function() {
-      utils.getAnimationFrame()(draw);
-      return update();
+      return utils.getAnimationFrame()(draw);
     };
     return pub = {
       draw: function() {
         return draw();
       },
-      init: function(container, c, v) {
+      init: function(containerId) {
         var $currentPage, $nextPage, ds;
         effects.init();
         canvas = document.createElement("canvas");
         ctx = canvas.getContext("2d");
-        $.subscribe("/previews/show", function() {
-          video.width = canvas.width = width;
-          video.height = canvas.height = height;
+        $.subscribe("/selectPreview/show", function() {
+          canvas.width = width;
+          canvas.height = height;
           return $container.kendoStop(true).kendoAnimate({
             effects: "zoomIn fadeIn",
             show: true,
@@ -60,11 +58,9 @@
             }
           });
         });
-        previews = [];
-        video = v;
-        $container = $("#" + container);
-        video.width = canvas.width = width;
-        video.height = canvas.height = height;
+        $container = $("#" + containerId);
+        canvas.width = width;
+        canvas.height = height;
         $currentPage = {};
         $nextPage = {};
         ds = new kendo.data.DataSource({
@@ -137,6 +133,8 @@
             return _results;
           }
         });
+        /* Pager Actions
+        */
         $container.on("click", ".more", function() {
           paused = true;
           if (ds.page() < ds.totalPages()) {
@@ -154,15 +152,6 @@
           }
         });
         return ds.read();
-      },
-      pause: function() {
-        return paused = true;
-      },
-      resume: function() {
-        return paused = false;
-      },
-      capture: function(callback) {
-        return webgl.ToDataURL;
       }
     };
   });

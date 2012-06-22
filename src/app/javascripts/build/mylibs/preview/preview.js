@@ -1,12 +1,16 @@
 (function() {
 
   define(['mylibs/utils/utils', 'libs/webgl/effects', 'libs/webgl/glfx.min'], function(utils, effects) {
-    var $container, canvas, ctx, currentCanvas, draw, frame, height, paused, preview, pub, update, video, webgl, width;
+    /*     Preview
+    
+    Shows the large video with selected effect giving the user the chance to take 
+    a snapshot or a photostrip
+    */
+    var $container, canvas, ctx, currentCanvas, draw, frame, height, paused, preview, pub, webgl, width;
     $container = {};
     canvas = {};
     ctx = {};
     webgl = {};
-    video = {};
     paused = true;
     preview = {};
     width = 460;
@@ -14,22 +18,19 @@
     frame = 0;
     currentCanvas = {};
     draw = function() {
-      utils.getAnimationFrame()(draw);
-      return update();
-    };
-    update = function() {
       if (!paused) {
         ctx.drawImage(window.HTML5CAMERA.canvas, 0, 0, width, height);
         frame++;
         if (preview.kind === "face") {
-          return preview.filter(canvas, window.HTML5CAMERA.canvas);
+          preview.filter(canvas, window.HTML5CAMERA.canvas);
         } else {
-          return preview.filter(webgl, canvas, frame);
+          preview.filter(webgl, canvas, frame);
         }
       }
+      return utils.getAnimationFrame()(draw);
     };
     return pub = {
-      init: function(container, v) {
+      init: function(container) {
         var $footer, $header, $mask, $preview;
         canvas = document.createElement("canvas");
         ctx = canvas.getContext("2d");
@@ -55,8 +56,8 @@
             currentCanvas = webgl;
           }
           paused = false;
-          video.width = canvas.width = width;
-          video.height = canvas.height = height;
+          canvas.width = width;
+          canvas.height = height;
           $header.kendoStop(true).kendoAnimate({
             effects: "fadeIn",
             show: true,
@@ -102,7 +103,7 @@
             hide: true,
             duration: 500
           });
-          return $.publish("/previews/show");
+          return $.publish("/selectPreview/show");
         });
         $.subscribe("/preview/snapshot", function() {
           var callback;
@@ -119,7 +120,7 @@
         $.subscribe("/preview/photobooth", function() {
           var callback, images, photoNumber;
           images = [];
-          photoNumber = 2;
+          photoNumber = 4;
           callback = function() {
             --photoNumber;
             return $mask.fadeIn(50, function() {
