@@ -249,11 +249,12 @@ define([
                 }
 
                 {
-                    name: "Edge Work"
+                    name: "Sketch Book"
                     kind: "webgl"
                     filter: (canvas, element) -> 
                         effect = ->
                            canvas.edgeWork(2)
+                           canvas.sepia()
 
                         draw(canvas, element, effect)
                 }

@@ -243,12 +243,13 @@
             return draw(canvas, element, effect);
           }
         }, {
-          name: "Edge Work",
+          name: "Sketch Book",
           kind: "webgl",
           filter: function(canvas, element) {
             var effect;
             effect = function() {
-              return canvas.edgeWork(2);
+              canvas.edgeWork(2);
+              return canvas.sepia();
             };
             return draw(canvas, element, effect);
           }

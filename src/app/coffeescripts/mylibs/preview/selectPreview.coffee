@@ -21,6 +21,13 @@ define([
     frame = 0
     width = 200
     height = 150
+    direction = "left"
+
+    # define the animations. we slide different directions depending on if we are going forward or back.
+    pageAnimation = () ->
+
+        pageOut: "slide:#{direction} fadeOut"
+        pageIn: "slideIn:#{direction} fadeIn"
         
     # the main draw loop which renders the live video effects      
     draw = ->
@@ -187,7 +194,7 @@ define([
                             $nextPage.append($content)
 
                             # transition out the current page
-                            $currentPage.kendoStop(true).kendoAnimate { effects: "slide:down fadeOut", duration: 500, hide: true, complete: ->
+                            $currentPage.kendoStop(true).kendoAnimate { effects: "#{ pageAnimation().pageOut }", duration: 500, hide: true, complete: ->
 
                                 # swap classes with the next page
                                 $currentPage.removeClass("current-page").addClass("next-page")
@@ -198,7 +205,7 @@ define([
                             }   
 
                             # transition in the next page
-                            $nextPage.kendoStop(true).kendoAnimate { effects: "fadeIn", duration: 500, show: true, complete: ->
+                            $nextPage.kendoStop(true).kendoAnimate { effects: "#{ pageAnimation().pageIn }", duration: 500, show: true, complete: ->
 
                                 # swap classes and make this the current page
                                 $nextPage.removeClass("next-page").addClass("current-page")
@@ -208,7 +215,6 @@ define([
                             }
 
 
-
             ### Pager Actions  ###
 
             # when the user clicks the more button
@@ -216,6 +222,9 @@ define([
 
                 # pause the ui
                 paused = true
+
+                # set the direction for the slide
+                direction = "left"
 
                 # if the current page is less than the total number of pages
                 if ds.page() < ds.totalPages()
@@ -233,6 +242,9 @@ define([
 
                 # pause the ui
                 paused = true
+
+                # set the direction for the slides
+                direction = "right"
 
                 # if the current page is page 1
                 if ds.page() == 1

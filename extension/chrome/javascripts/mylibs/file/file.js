@@ -1,6 +1,10 @@
 (function() {
 
   define(['mylibs/utils/utils'], function(utils) {
+    /*   File
+    
+    The file module takes care of all the reading and writing to and from the file system
+    */
     var blobBuiler, compare, destroy, download, errorHandler, fileSystem, myPicturesDir, pub, read, save;
     window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
     fileSystem = {};
@@ -47,7 +51,7 @@
             return $.publish("/share/gdrive/upload", [blob]);
           };
           fileWriter.onerror = function(e) {
-            return console.error("Write failed: " + e.toString());
+            return errorHandler(e);
           };
           return fileWriter.write(blob);
         });
@@ -78,7 +82,7 @@
             return $.publish("/notify/show", ["File Saved", "The picture was saved succesfully", false]);
           };
           fileWriter.onerror = function(e) {
-            return $.publish("/notify/show", ["File Save Failed", "There was an error saving the file", false]);
+            return errorHandler(e);
           };
           return fileWriter.write(blob);
         });
@@ -90,20 +94,14 @@
         return window.requestFileSystem(PERSISTENT, grantedBytes, success, errorHandler);
       });
       return success = function(fs) {
-        console.log("Got File Access!");
         fs.root.getDirectory("MyPictures", {
           create: true
         }, function(dirEntry) {
-          var animation, dirReader, entries, files;
+          var dirReader, entries, files;
           myPicturesDir = dirEntry;
           entries = [];
           files = [];
           dirReader = fs.root.createReader();
-          animation = {
-            effects: "zoomIn fadeIn",
-            show: true,
-            duration: 1000
-          };
           read = function() {
             return dirReader.readEntries(function(results) {
               var entry, readFile, _i, _len;

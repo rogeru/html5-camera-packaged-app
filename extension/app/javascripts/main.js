@@ -4004,12 +4004,13 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
             return draw(canvas, element, effect);
           }
         }, {
-          name: "Edge Work",
+          name: "Sketch Book",
           kind: "webgl",
           filter: function(canvas, element) {
             var effect;
             effect = function() {
-              return canvas.edgeWork(2);
+              canvas.edgeWork(2);
+              return canvas.sepia();
             };
             return draw(canvas, element, effect);
           }
@@ -4332,7 +4333,7 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
     
     Select preview shows pages of 6 live previews using webgl effects
     */
-    var $container, canvas, ctx, draw, frame, height, paused, previews, pub, webgl, width;
+    var $container, canvas, ctx, direction, draw, frame, height, pageAnimation, paused, previews, pub, webgl, width;
     paused = false;
     canvas = {};
     ctx = {};
@@ -4342,6 +4343,13 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
     frame = 0;
     width = 200;
     height = 150;
+    direction = "left";
+    pageAnimation = function() {
+      return {
+        pageOut: "slide:" + direction + " fadeOut",
+        pageIn: "slideIn:" + direction + " fadeIn"
+      };
+    };
     draw = function() {
       var preview, _i, _len;
       if (!paused) {
@@ -4438,7 +4446,7 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
                 });
                 $nextPage.append($content);
                 $currentPage.kendoStop(true).kendoAnimate({
-                  effects: "slide:down fadeOut",
+                  effects: "" + (pageAnimation().pageOut),
                   duration: 500,
                   hide: true,
                   complete: function() {
@@ -4447,7 +4455,7 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
                   }
                 });
                 return $nextPage.kendoStop(true).kendoAnimate({
-                  effects: "fadeIn",
+                  effects: "" + (pageAnimation().pageIn),
                   duration: 500,
                   show: true,
                   complete: function() {
@@ -4464,6 +4472,7 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
         */
         $container.on("click", ".more", function() {
           paused = true;
+          direction = "left";
           if (ds.page() < ds.totalPages()) {
             return ds.page(ds.page() + 1);
           } else {
@@ -4472,6 +4481,7 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
         });
         $container.on("click", ".back", function() {
           paused = true;
+          direction = "right";
           if (ds.page() === 1) {
             return ds.page(ds.totalPages());
           } else {
