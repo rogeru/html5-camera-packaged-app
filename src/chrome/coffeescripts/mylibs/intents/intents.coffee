@@ -1,6 +1,14 @@
 define([
 ], () ->
 	
+	###		Intents
+
+	Invokes and responds to web intents
+
+	NOT CURRENTLY IMPLEMENTED
+
+	###
+
 	pub = 
 
 		init: ->

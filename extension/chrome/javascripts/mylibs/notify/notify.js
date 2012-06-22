@@ -1,6 +1,11 @@
 (function() {
 
   define([], function() {
+    /*		Notify
+    
+    	shows the chrome notification window, and takes care of closing it if it isn't 
+    	marked as sticky
+    */
     var pub;
     return pub = {
       init: function() {

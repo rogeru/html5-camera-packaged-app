@@ -1,6 +1,12 @@
 (function() {
 
   define([], function() {
+    /*		Intents
+    
+    	Invokes and responds to web intents
+    
+    	NOT CURRENTLY IMPLEMENTED
+    */
     var pub;
     return pub = {
       init: function() {
