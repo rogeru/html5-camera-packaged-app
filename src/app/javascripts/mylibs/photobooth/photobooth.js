@@ -1,6 +1,6 @@
 (function() {
 
-  define(['text!mylibs/photobooth/views/photostrip.html'], function(photostrip) {
+  define([], function() {
     /* Photostrip
     
     	Handles creation of photostrips by stitching separate photos together

@@ -1,51 +1,19 @@
 (function() {
 
-  define(['text!mylibs/share/views/share.html'], function(share) {
-    var $actions, $working, currentLink, links, modal, pub, viewModel;
+  define(['text!mylibs/share/views/share.html'], function(html) {
+    /*		Share
+    
+    	Handles sharing of images
+    */
+    var $actions, $working, currentLink, links, modal, pub, share, viewModel;
     viewModel = kendo.observable({
       src: "images/placeholder.png",
       name: null,
-      actions: "block",
-      working: "none",
       tweet: function() {
-        $.publish("/postman/deliver", [
-          {
-            message: {
-              image: this.get("src"),
-              link: currentLink
-            }
-          }, "/share/twitter"
-        ]);
-        $actions.kendoStop(true).kendoAnimate({
-          effects: "slide:down fadeOut",
-          duration: 500,
-          hide: true
-        });
-        return $working.kendoStop(true).kendoAnimate({
-          effects: "slideIn:down fadeIn",
-          duration: 500,
-          show: true
-        });
+        return share(this.get("src"), "twitter");
       },
       google: function() {
-        $.publish("/postman/deliver", [
-          {
-            message: {
-              image: this.get("src"),
-              link: currentLink
-            }
-          }, "/share/google"
-        ]);
-        $actions.kendoStop(true).kendoAnimate({
-          effects: "slide:down fadeOut",
-          duration: 500,
-          hide: true
-        });
-        return $working.kendoStop(true).kendoAnimate({
-          effects: "slideIn:down fadeIn",
-          duration: 500,
-          show: true
-        });
+        return share(this.get("src"), "google");
       }
     });
     modal = {};
@@ -53,6 +21,26 @@
     $working = {};
     links = [];
     currentLink = null;
+    share = function(src, service) {
+      $.publish("/postman/deliver", [
+        {
+          message: {
+            image: src,
+            link: currentLink
+          }
+        }, "/share/" + service
+      ]);
+      $actions.kendoStop(true).kendoAnimate({
+        effects: "slide:down fadeOut",
+        duration: 500,
+        hide: true
+      });
+      return $working.kendoStop(true).kendoAnimate({
+        effects: "slideIn:down fadeIn",
+        duration: 500,
+        show: true
+      });
+    };
     return pub = {
       init: function() {
         var $content;
@@ -84,7 +72,7 @@
             show: true
           });
         });
-        $content = $(share);
+        $content = $(html);
         $actions = $content.find(".actions");
         $working = $content.find(".working");
         modal = $content.kendoWindow({
@@ -102,12 +90,6 @@
           }
         }).data("kendoWindow");
         return kendo.bind($content, viewModel);
-      },
-      show: function() {
-        var $content;
-        $content = $(share);
-        modal.content($content);
-        return modal.show();
       }
     };
   });

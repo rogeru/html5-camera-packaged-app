@@ -1,8 +1,6 @@
 define([
-  'libs/jquery/jquery'	# lib/jquery/jquery
-  'libs/kendo/kendo' 	# lib/underscore/underscore
   'mylibs/pictures/pictures'
-], ($, kendo, effects, filters, snapshot, utils, file) ->
+], (effects, filters, snapshot, utils, file) ->
 	
 	polaroid = false
 	preview = {}

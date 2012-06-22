@@ -1,6 +1,6 @@
 (function() {
 
-  define(['libs/jquery/jquery', 'libs/kendo/kendo', 'mylibs/pictures/pictures'], function($, kendo, effects, filters, snapshot, utils, file) {
+  define(['mylibs/pictures/pictures'], function(effects, filters, snapshot, utils, file) {
     var $container, create, develop, polaroid, preview, pub, svg;
     polaroid = false;
     preview = {};

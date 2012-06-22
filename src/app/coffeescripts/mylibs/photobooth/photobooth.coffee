@@ -1,6 +1,5 @@
 define([
-  'text!mylibs/photobooth/views/photostrip.html'
-], (photostrip) ->
+], () ->
 
 	### Photostrip
 
