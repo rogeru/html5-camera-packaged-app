@@ -1,6 +1,12 @@
 (function() {
 
   define(['mylibs/utils/utils'], function(utils) {
+    /*		Assets
+    
+    	The assets object defines the pipeline that sends images down to the
+    	application. this is because the sandbox treats local resources as suspect.
+    	this way, the sandbox will trust these images and let us draw and read them from canvas's
+    */
     'use strict';
     var assets, pub;
     assets = [

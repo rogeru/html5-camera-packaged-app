@@ -2,8 +2,17 @@ define([
   'mylibs/utils/utils'
 ], (utils) ->
 	
+	###		Assets
+
+	The assets object defines the pipeline that sends images down to the
+	application. this is because the sandbox treats local resources as suspect.
+	this way, the sandbox will trust these images and let us draw and read them from canvas's
+
+	###
+
 	'use strict'
 
+	# array of assets that gets sent down to the application
 	assets = [
 		{
 			name: "glasses"
@@ -23,6 +32,7 @@ define([
 		}
 	]
 
+	# anything under here is public
 	pub = 
 
 		init: ->
