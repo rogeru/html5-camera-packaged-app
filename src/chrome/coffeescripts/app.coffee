@@ -67,25 +67,4 @@ define([
 
 			# start the camera
 			navigator.webkitGetUserMedia { video: true }, hollaback, errback
-
-			# prop.src = "chrome/images/horns.png"
-			# prop.name = "horns"
-			#$.publish "/postman/deliver", [{ message: { name: "horns", image: prop.toDataURL() } }, "/effects/props" ]
-
-			# chrome.experimental.app.onLaunched.addListener(-> 
-  				
-  	# 			onWindowLoaded = (win) -> 
-
-  	# 				# cue up the postman!
-  	# 				postman.init(win)
-
-  	# 				# get the currently saved files
-  	# 				$.publish "/file/read", []
-
-  	# 				# start the camera
-  	# 				navigator.webkitGetUserMedia { video: true }, hollaback, errback
-
-  	# 			win = chrome.appWindow.create('chrome/app/index.html', { width: 900, height: 700 }, onWindowLoaded)
-
-			# )
 )

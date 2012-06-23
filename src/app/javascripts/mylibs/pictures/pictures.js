@@ -85,7 +85,9 @@
     return pub = {
       init: function(containerId) {
         $container = $("#" + containerId);
-        $container.masonry();
+        $container.masonry({
+          itemSelector: ".box"
+        });
         $.subscribe("/pictures/reload", function() {
           return pub.reload();
         });

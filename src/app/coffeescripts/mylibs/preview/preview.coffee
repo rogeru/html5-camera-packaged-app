@@ -23,6 +23,7 @@ define([
     height = 340
     frame = 0
     currentCanvas = {}
+    click = document.createElement("audio")
     
     # the draw loop. called at the current framerate
     draw = ->
@@ -58,6 +59,10 @@ define([
     pub =
         
         init: (container) ->
+
+            # initialize the sounds so they are ready to play
+            click.src = "sounds/click.mp3"
+            click.buffer = "auto"
             
             # create a blank canvas which will hold a copy of the global canvas. we
             # don't want to alter the global canvas in any way, so we're going to alter
@@ -144,22 +149,27 @@ define([
                 
                 # disable the controls so people don't click twice before the app is done 
                 # taking an image
-                $.publish "/controls/disable"
+                $.publish "/controls/enable", [ false ]
 
                 # this callback executes the flash effect and actually gets the image
                 # off the canvas
                 callback = ->
                     
+                    click.play()
+
                     $mask.fadeIn 50, -> 
                         $mask.fadeOut 900
                         $.publish "/pictures/create", [ { image: currentCanvas.toDataURL() , name: null, photoStrip: false, save: true } ]
-                        $.publish("/controls/enable")
+                        $.publish "/controls/enable", [ true ]
 
                 # tell the camera to countdown
                 $.publish("/camera/countdown", [3, callback])
 
             # listen for the photobooth button click
             $.subscribe "/preview/photobooth", ->
+
+                # disabled controls
+                $.publish "/controls/enable", [ false ]
 
                 # create an array of images that will comprise the strip
                 images = []
@@ -169,6 +179,8 @@ define([
 
                 # this callback executes after the camera countdown
                 callback = ->
+
+                    click.play()
 
                     # decrement the number of photos we still need to take
                     --photoNumber
@@ -192,6 +204,9 @@ define([
                                 # otherwise publish the event that creates the photostrip
                                 # passing in an array of images that it will use.
                                 $.publish("/photobooth/create", [images])
+
+                                # enable controls
+                                $.publish "/controls/enable", [ true ]
 
                 # tell the camera to countdown for the first image
                 $.publish "/camera/countdown", [3, callback]

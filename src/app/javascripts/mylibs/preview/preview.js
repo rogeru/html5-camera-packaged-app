@@ -6,7 +6,7 @@
     Shows the large video with selected effect giving the user the chance to take 
     a snapshot or a photostrip
     */
-    var $container, canvas, ctx, currentCanvas, draw, frame, height, paused, preview, pub, webgl, width;
+    var $container, canvas, click, ctx, currentCanvas, draw, frame, height, paused, preview, pub, webgl, width;
     $container = {};
     canvas = {};
     ctx = {};
@@ -17,6 +17,7 @@
     height = 340;
     frame = 0;
     currentCanvas = {};
+    click = document.createElement("audio");
     draw = function() {
       if (!paused) {
         ctx.drawImage(window.HTML5CAMERA.canvas, 0, 0, width, height);
@@ -32,6 +33,8 @@
     return pub = {
       init: function(container) {
         var $footer, $header, $mask, $preview;
+        click.src = "sounds/click.mp3";
+        click.buffer = "auto";
         canvas = document.createElement("canvas");
         ctx = canvas.getContext("2d");
         $container = $("#" + container);
@@ -107,8 +110,9 @@
         });
         $.subscribe("/preview/snapshot", function() {
           var callback;
-          $.publish("/controls/disable");
+          $.publish("/controls/enable", [false]);
           callback = function() {
+            click.play();
             return $mask.fadeIn(50, function() {
               $mask.fadeOut(900);
               $.publish("/pictures/create", [
@@ -119,16 +123,18 @@
                   save: true
                 }
               ]);
-              return $.publish("/controls/enable");
+              return $.publish("/controls/enable", [true]);
             });
           };
           return $.publish("/camera/countdown", [3, callback]);
         });
         $.subscribe("/preview/photobooth", function() {
           var callback, images, photoNumber;
+          $.publish("/controls/enable", [false]);
           images = [];
           photoNumber = 4;
           callback = function() {
+            click.play();
             --photoNumber;
             return $mask.fadeIn(50, function() {
               return $mask.fadeOut(900, function() {
@@ -136,7 +142,8 @@
                 if (photoNumber > 0) {
                   return $.publish("/camera/countdown", [3, callback]);
                 } else {
-                  return $.publish("/photobooth/create", [images]);
+                  $.publish("/photobooth/create", [images]);
+                  return $.publish("/controls/enable", [true]);
                 }
               });
             });

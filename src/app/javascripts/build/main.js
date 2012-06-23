@@ -59,13 +59,21 @@
     var pub;
     return pub = {
       init: function(controlsId) {
-        var $controls;
+        var $buttons, $controls;
         $controls = $("#" + controlsId);
+        $buttons = $controls.find("button");
         $controls.on("click", "button", function() {
           return $.publish($(this).data("event"));
         });
-        return $controls.on("change", "input", function(e) {
+        $controls.on("change", "input", function(e) {
           return $.publish("/polaroid/change", [e]);
+        });
+        return $.subscribe("/controls/enable", function(enabled) {
+          if (enabled) {
+            return $buttons.removeAttr("disabled");
+          } else {
+            return $buttons.attr("disabled", "disabled");
+          }
         });
       }
     };
@@ -3131,7 +3139,9 @@ define('text!mylibs/pictures/views/picture.html',[],function () { return '<div c
     return pub = {
       init: function(containerId) {
         $container = $("#" + containerId);
-        $container.masonry();
+        $container.masonry({
+          itemSelector: ".box"
+        });
         $.subscribe("/pictures/reload", function() {
           return pub.reload();
         });
@@ -4182,7 +4192,7 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
     Shows the large video with selected effect giving the user the chance to take 
     a snapshot or a photostrip
     */
-    var $container, canvas, ctx, currentCanvas, draw, frame, height, paused, preview, pub, webgl, width;
+    var $container, canvas, click, ctx, currentCanvas, draw, frame, height, paused, preview, pub, webgl, width;
     $container = {};
     canvas = {};
     ctx = {};
@@ -4193,6 +4203,7 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
     height = 340;
     frame = 0;
     currentCanvas = {};
+    click = document.createElement("audio");
     draw = function() {
       if (!paused) {
         ctx.drawImage(window.HTML5CAMERA.canvas, 0, 0, width, height);
@@ -4208,6 +4219,8 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
     return pub = {
       init: function(container) {
         var $footer, $header, $mask, $preview;
+        click.src = "sounds/click.mp3";
+        click.buffer = "auto";
         canvas = document.createElement("canvas");
         ctx = canvas.getContext("2d");
         $container = $("#" + container);
@@ -4283,8 +4296,9 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
         });
         $.subscribe("/preview/snapshot", function() {
           var callback;
-          $.publish("/controls/disable");
+          $.publish("/controls/enable", [false]);
           callback = function() {
+            click.play();
             return $mask.fadeIn(50, function() {
               $mask.fadeOut(900);
               $.publish("/pictures/create", [
@@ -4295,16 +4309,18 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
                   save: true
                 }
               ]);
-              return $.publish("/controls/enable");
+              return $.publish("/controls/enable", [true]);
             });
           };
           return $.publish("/camera/countdown", [3, callback]);
         });
         $.subscribe("/preview/photobooth", function() {
           var callback, images, photoNumber;
+          $.publish("/controls/enable", [false]);
           images = [];
           photoNumber = 4;
           callback = function() {
+            click.play();
             --photoNumber;
             return $mask.fadeIn(50, function() {
               return $mask.fadeOut(900, function() {
@@ -4312,7 +4328,8 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
                 if (photoNumber > 0) {
                   return $.publish("/camera/countdown", [3, callback]);
                 } else {
-                  return $.publish("/photobooth/create", [images]);
+                  $.publish("/photobooth/create", [images]);
+                  return $.publish("/controls/enable", [true]);
                 }
               });
             });
@@ -4371,7 +4388,7 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
         return draw();
       },
       init: function(containerId) {
-        var $currentPage, $nextPage, ds;
+        var $buttons, $currentPage, $nextPage, ds;
         effects.init();
         canvas = document.createElement("canvas");
         ctx = canvas.getContext("2d");
@@ -4394,6 +4411,7 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
           });
         });
         $container = $("#" + containerId);
+        $buttons = $container.find("button");
         canvas.width = width;
         canvas.height = height;
         $currentPage = {};
@@ -4460,7 +4478,9 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
                   show: true,
                   complete: function() {
                     $nextPage.removeClass("next-page").addClass("current-page");
-                    return paused = false;
+                    effects.clearBuffer();
+                    paused = false;
+                    return $buttons.removeAttr("disabled");
                   }
                 });
               })());
@@ -4471,6 +4491,7 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
         /* Pager Actions
         */
         $container.on("click", ".more", function() {
+          $buttons.attr("disabled", "disabled");
           paused = true;
           direction = "left";
           if (ds.page() < ds.totalPages()) {
@@ -4480,6 +4501,7 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
           }
         });
         $container.on("click", ".back", function() {
+          $buttons.attr("disabled", "disabled");
           paused = true;
           direction = "right";
           if (ds.page() === 1) {
@@ -4503,11 +4525,12 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
     The camera module takes care of getting the users media and drawing it to a canvas.
     It also handles the coutdown that is intitiated
     */
-    var $counter, canvas, countdown, ctx, paused, pub, turnOn, utils;
+    var $counter, beep, canvas, countdown, ctx, paused, pub, turnOn, utils;
     $counter = {};
     utils = {};
     canvas = {};
     ctx = {};
+    beep = document.createElement("audio");
     paused = false;
     turnOn = function(callback, testing) {
       window.HTML5CAMERA.canvas = canvas;
@@ -4522,6 +4545,7 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
     };
     countdown = function(num, callback) {
       var counters, index;
+      beep.play();
       counters = $counter.find("span");
       index = counters.length - num;
       return $(counters[index]).css("opacity", "1").animate({
@@ -4538,7 +4562,8 @@ define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="
     return pub = {
       init: function(counter, callback) {
         $counter = $("#" + counter);
-        pub.video = document.createElement("video");
+        beep.src = "sounds/beep.mp3";
+        beep.buffer = "auto";
         canvas = document.createElement("canvas");
         canvas.width = 460;
         canvas.height = 340;

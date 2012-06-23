@@ -43,7 +43,7 @@
         return draw();
       },
       init: function(containerId) {
-        var $currentPage, $nextPage, ds;
+        var $buttons, $currentPage, $nextPage, ds;
         effects.init();
         canvas = document.createElement("canvas");
         ctx = canvas.getContext("2d");
@@ -66,6 +66,7 @@
           });
         });
         $container = $("#" + containerId);
+        $buttons = $container.find("button");
         canvas.width = width;
         canvas.height = height;
         $currentPage = {};
@@ -132,7 +133,9 @@
                   show: true,
                   complete: function() {
                     $nextPage.removeClass("next-page").addClass("current-page");
-                    return paused = false;
+                    effects.clearBuffer();
+                    paused = false;
+                    return $buttons.removeAttr("disabled");
                   }
                 });
               })());
@@ -143,6 +146,7 @@
         /* Pager Actions
         */
         $container.on("click", ".more", function() {
+          $buttons.attr("disabled", "disabled");
           paused = true;
           direction = "left";
           if (ds.page() < ds.totalPages()) {
@@ -152,6 +156,7 @@
           }
         });
         $container.on("click", ".back", function() {
+          $buttons.attr("disabled", "disabled");
           paused = true;
           direction = "right";
           if (ds.page() === 1) {

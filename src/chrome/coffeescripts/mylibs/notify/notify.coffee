@@ -22,7 +22,7 @@ define([
 					notification.close()
 
 				# create the notification
-				notification = webkitNotifications.createNotification '16.png', title, body
+				notification = webkitNotifications.createNotification 'icon_16.png', title, body
 
 				# if it isn't sticky, wait 3 seconds and then close it
 				if not sticky

@@ -6,11 +6,12 @@
     The camera module takes care of getting the users media and drawing it to a canvas.
     It also handles the coutdown that is intitiated
     */
-    var $counter, canvas, countdown, ctx, paused, pub, turnOn, utils;
+    var $counter, beep, canvas, countdown, ctx, paused, pub, turnOn, utils;
     $counter = {};
     utils = {};
     canvas = {};
     ctx = {};
+    beep = document.createElement("audio");
     paused = false;
     turnOn = function(callback, testing) {
       window.HTML5CAMERA.canvas = canvas;
@@ -25,6 +26,7 @@
     };
     countdown = function(num, callback) {
       var counters, index;
+      beep.play();
       counters = $counter.find("span");
       index = counters.length - num;
       return $(counters[index]).css("opacity", "1").animate({
@@ -41,7 +43,8 @@
     return pub = {
       init: function(counter, callback) {
         $counter = $("#" + counter);
-        pub.video = document.createElement("video");
+        beep.src = "sounds/beep.mp3";
+        beep.buffer = "auto";
         canvas = document.createElement("canvas");
         canvas.width = 460;
         canvas.height = 340;

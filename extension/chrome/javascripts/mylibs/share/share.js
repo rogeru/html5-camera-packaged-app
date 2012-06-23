@@ -4,6 +4,7 @@
     var pub;
     return pub = {
       init: function() {
+        var gdocs;
         $.subscribe("/share/twitter", function(message) {
           var callback;
           callback = function() {
@@ -25,7 +26,7 @@
             return callback(message.link);
           }
         });
-        return $.subscribe("/share/google", function(message) {
+        $.subscribe("/share/google", function(message) {
           var callback;
           callback = function() {
             var link;
@@ -45,6 +46,10 @@
           } else {
             return callback(message.link);
           }
+        });
+        gdocs = new GDocs();
+        return gdocs.auth(function() {
+          return console.log(gdocs.accessToken);
         });
       }
     };

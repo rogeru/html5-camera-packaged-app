@@ -14,7 +14,7 @@
           close = function() {
             return notification.close();
           };
-          notification = webkitNotifications.createNotification('16.png', title, body);
+          notification = webkitNotifications.createNotification('icon_16.png', title, body);
           if (!sticky) setTimeout(close, 3000);
           return notification.show();
         });

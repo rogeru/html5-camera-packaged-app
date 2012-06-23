@@ -106,6 +106,9 @@ define([
             # which calls it's init. grab it from the DOM and cache it.
             $container = $("##{containerId}")
 
+            # get a reference to the more and back buttons
+            $buttons = $container.find("button")
+
             # set the canvas width and height (object level vars)
             canvas.width = width   
             canvas.height = height
@@ -210,8 +213,14 @@ define([
                                 # swap classes and make this the current page
                                 $nextPage.removeClass("next-page").addClass("current-page")
                                 
+                                # clear the buffer in the effects
+                                effects.clearBuffer()
+
                                 # unpause and draw
                                 paused = false
+
+                                # enable the buttons
+                                $buttons.removeAttr "disabled"
                             }
 
 
@@ -219,6 +228,9 @@ define([
 
             # when the user clicks the more button
             $container.on "click", ".more", ->
+
+                # disable the buttons
+                $buttons.attr "disabled", "disabled"
 
                 # pause the ui
                 paused = true
@@ -239,6 +251,9 @@ define([
 
             # when the user clicks the back button
             $container.on "click", ".back", ->
+
+                # disable the buttons
+                $buttons.attr "disabled", "disabled"
 
                 # pause the ui
                 paused = true

@@ -102,6 +102,8 @@ define([
 		# all done. append the template to the container
 		$container.append($div)
 
+		
+
 	pub = 
 		
 		init: (containerId) ->
@@ -111,8 +113,7 @@ define([
 			$container = $("##{containerId}")
 
 			# initialize the jquery masonry layout plugin
-			$container.masonry()
-
+			$container.masonry({ itemSelector: ".box" })
 
 			# subscribe to events
 			$.subscribe "/pictures/reload", ->

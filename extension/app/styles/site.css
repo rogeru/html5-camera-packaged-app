@@ -39,13 +39,17 @@ body {
     margin-left: 500px;
 }
 
+.fadeOut {
+	margin-left: 500px;
+}
+
 .centered {
     text-align: center;
 }
 
 #sidebar {
 	height: 100%;
-    position: absolute;
+    position: fixed;
     z-index: 100;
     top: 0;
     left:auto;
@@ -488,3 +492,4 @@ box-shadow: 10px 10px 5px #888;
 	text-align: center;
 	display: none
 }
+

@@ -16,6 +16,7 @@ define([
     utils = {}
     canvas = {}
     ctx = {}
+    beep = document.createElement("audio")
 
     paused = false
 
@@ -46,6 +47,9 @@ define([
 
     countdown = ( num, callback ) ->
         
+        # play the beep
+        beep.play()
+
         # get the counters element 
         counters = $counter.find("span")
         
@@ -68,8 +72,9 @@ define([
             # set a reference to the countdown DOM object
             $counter = $("##{counter}")
 
-            pub.video = document.createElement("video")
-            #pub.video.src = "burke.mp4"
+            # buffer up the beep sound effect
+            beep.src = "sounds/beep.mp3"
+            beep.buffer = "auto"
 
             # create a blank canvas element and set it's size
             canvas = document.createElement("canvas")

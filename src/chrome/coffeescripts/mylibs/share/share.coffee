@@ -34,7 +34,7 @@ define([
 				else
 					callback(message.link)
 
-			# gdocs = new GDocs()
+			gdocs = new GDocs()
 
 			# getDocs = ->
 
@@ -55,8 +55,8 @@ define([
 
 			# 		error: ->
 
-			# gdocs.auth ->
-
+			gdocs.auth ->
+				console.log(gdocs.accessToken)
 			#  	$.ajax 
 			#  		url: "https://www.googleapis.com/drive/v1/files"
 			#  		type: "POST"
