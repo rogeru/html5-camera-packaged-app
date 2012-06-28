@@ -19,6 +19,16 @@
     pixelsBetweenStamps = 0;
     callback = {};
     viewModel = kendo.observable({
+      red: 0,
+      green: 0,
+      blue: 0,
+      alpha: 0,
+      size: 4,
+      preview: null,
+      change: function(e) {
+        this.set("preview", "rgba(" + (this.get("red")) + "," + (this.get("green")) + "," + (this.get("blue")) + "," + (this.get("alpha")) + ")");
+        return updateBrush(this.get("red"), this.get("green"), this.get("blue"), this.get("alpha"), this.get("size"));
+      },
       draw: function(e) {
         var a, b, g, r;
         if ($activeBrush) $activeBrush.removeClass("selected");
@@ -27,7 +37,11 @@
         g = $activeBrush.data("g");
         b = $activeBrush.data("b");
         a = $activeBrush.data("a");
-        return updateBrush(r, g, b, a);
+        this.set("red", r);
+        this.set("green", g);
+        this.set("blue", b);
+        this.set("alpha", a);
+        return this.change();
       },
       yep: function() {
         callback(canvas.toDataURL());
@@ -46,13 +60,13 @@
       canvas.update();
       return utils.getAnimationFrame()(render);
     };
-    updateBrush = function(red, green, blue, alpha) {
+    updateBrush = function(red, green, blue, alpha, size) {
       stampTexture = canvas.texture(createBlobBrush({
         r: red,
         g: green,
         b: blue,
         a: alpha,
-        radius: 5,
+        radius: size,
         fuzziness: 1
       }));
       return pixelsBetweenStamps = 5 / 4;
@@ -145,6 +159,7 @@
         $content = $(template(pallet));
         drawSafe = document.createElement("canvas");
         canvas = fx.canvas();
+        $(canvas).addClass("reflection");
         $content.find(".canvas").append(canvas);
         $window = $content.kendoWindow({
           visible: false,
@@ -166,7 +181,7 @@
               duration: 500
             }
           }
-        }).data("kendoWindow").center();
+        }).data("kendoWindow");
         kendo.bind($content, viewModel);
         return $.subscribe("/stamp/show", function(src, saveFunction) {
           var ctx, oldImage;
@@ -180,11 +195,11 @@
           texture = canvas.texture(drawSafe);
           bufferTexture = canvas.texture(texture.width(), texture.height());
           bufferTexture.clear();
-          updateBrush(255, 255, 255, 255);
+          viewModel.change();
           $activeBrush = $content.find(".default");
           setupMouse();
           render();
-          return $window.open();
+          return $window.center().open();
         });
       }
     };

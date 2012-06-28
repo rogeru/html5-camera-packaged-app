@@ -158,6 +158,9 @@ define([
 				customizeEffect sender, saveFunction
 			)
 
+			# add some reflection to the webgl
+			$(webgl).addClass("reflection")
+
 			# find the canvas div in the DOM fragment and append
 			# a webgl canvas
 			$content.find(".canvas").append(webgl)

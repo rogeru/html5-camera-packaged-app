@@ -2795,7 +2795,7 @@ b,e)})}},write:function(a,c,b){if(c in j){var e=g.jsEscape(j[c]);b.asModule(a+"!
 
 define('text!intro.html',[],function () { return '<div id="intro">\n\t<p><h1>Welcome to HTML5 Camera!</h1></p>\n\t<p>This site is an experiment with HTML5 technologies, including WebRTC, Device Orientation, Canvas, Video and others.</p>\n\t<p>In order to use this site, you will need a browser that is on the bleeding edge of HTML5.  Currently, HTML5 Camera Supports the following browsers...</p>\n\t<ul>\n\t\t<li><a href="http://www.chromium.org/getting-involved/dev-channel">Chrome Dev Channel</a></li>\n\t\t<li><a href="http://www.chromium.org/getting-involved/dev-channel">Chrome Canary</a></li>\n\t\t<li><a href="http://snapshot.opera.com/labs/camera/">Opera Labs Camera Build</a></li>\n\t</ul>\t\n\t<p>For the Chrome Builds, you will need to turn on the experimental WebRTC feature by entering <strong>chrome://flags</strong> in your address bar and then enabling <strong>Media Streaming</strong></p>\n\t<br />\n\t<p><div class="chrome-flags"><img src="stylesheets/images/chrome_flags.png" alt="Enable Media Streaming Under Chrome Flags" /></div></p>\n</div>';});
 
-define('text!mylibs/customize/views/customize.html',[],function () { return '\n<div id="customize">\n\t<div class="row dark">\n\t\t<div class="span6">\n\t\t\t<div class="row centered no-margin">\n\t\t\t\t<div class="canvas">\n\t\t\t\t</div>\n\t\t\t\t<div class="yep-nope">\n\t\t\t\t\t<button class="button" data-bind="events: { click: yep }">Yep</button>\n\t\t\t\t\t<button class="button" data-bind="events: { click: nope }">Nope</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class="span4">\n\t\t\t<h3>Brightness / Contrast</h3>\n\t\t\t<div>\n\t\t\t\t<div>Brightness<div>\n\t\t\t\t<input class="slider" data-role="slider" data-tick-placement="none" data-bind="value: effects.brightnessContrast.brightness.value, events: { slide: change, change: change }" data-small-step=".01" data-large-step=".01" min="0" max="1" />\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<div>Contrast</div>\n\t\t\t\t\t<input class="slider" data-role="slider" data-tick-placement="none" data-bind="value: effects.brightnessContrast.contrast.value, events: { slide: change, change: change }" max="1" min="0" data-small-step=".01" data-large-step=".01"/>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<br />\n\t\t\t<h3>Vignette</h3>\n\t\t\t<div>\n\t\t\t\t<div>Corner Size</div>\n\t\t\t\t\t<input data-role="slider" data-tick-placement="none" class="slider" data-large-step=".01" data-small-step=".01" max="1" min="0" data-bind="value: effects.vignette.size.value, events: { slide: change, change: change }" />\n\t\t\t</div>\n\t\t\t<div>\t\n\t\t\t\t<div>Corner Amount</div>\n\t\t\t\t<input data-role="slider" data-tick-placement="none" class="slider" data-large-step=".01" data-small-step=".01" max="1" min="0" data-bind="value: effects.vignette.amount.value, events: { slide: change, change: change }" />\n\t\t\t</div>\n\t\t\t<br />\n\t\t\t<h3>Hue / Saturation</h3>\n\t\t\t<div>\n\t\t\t\t<div>Hue</div>\n\t\t\t\t\t<input data-role="slider" data-tick-placement="none" class="slider" data-large-step=".01" data-small-step=".01" max="1" min="0" data-bind="value: effects.hueSaturation.hue.value, events: { slide: change, change: change }" />\n\t\t\t</div>\n\t\t\t<div>\t\n\t\t\t\t<div>Saturation</div>\n\t\t\t\t<input data-role="slider" data-tick-placement="none" class="slider" data-large-step=".01" data-small-step=".01" max="1" min="0" data-bind="value: effects.hueSaturation.saturation.value, events: { slide: change, change: change }" />\n\t\t\t</div>\n\t\t\t<br />\n\t\t\t<h3>Noise</h3>\n\t\t\t<div>\n\t\t\t\t<div>Noise</div>\n\t\t\t\t\t<input data-role="slider" data-tick-placement="none" class="slider" data-large-step=".01" data-small-step=".01" max="1" min="0" data-bind="value: effects.noise.noise.value, events: { slide: change, change: change }" />\n\t\t\t</div>\n\t\t\t<!--\n\t\t\t<div>\n\t\t\t\t<div>Denoise</div>\n\t\t\t\t\t<input data-role="slider" data-tick-placement="none" class="slider" data-large-step="1" data-small-step="1" max="50" min="0" data-bind="value: effects.denoise.denoise.value, events: { slide: change, change: change }" />\n\t\t\t</div>\n\t\t-->\n\t\t</div>\n\t</div>\n</div>';});
+define('text!mylibs/customize/views/customize.html',[],function () { return '\n<div id="customize">\n\t<div class="row dark">\n\t\t<div class="span6">\n\t\t\t<div class="row centered no-margin">\n\t\t\t\t<div class="canvas">\n\t\t\t\t</div>\n\t\t\t\t<div class="yep-nope">\n\t\t\t\t\t<button class="button" data-bind="events: { click: yep }">Yep</button>\n\t\t\t\t\t<button class="button" data-bind="events: { click: nope }">Nope</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class="span4">\n\t\t\t<h3>Brightness / Contrast</h3>\n\t\t\t<div>\n\t\t\t\t<div>Brightness<div>\n\t\t\t\t<input class="slider" data-role="slider" data-tick-placement="none" data-bind="value: effects.brightnessContrast.brightness.value, events: { slide: change, change: change }" data-tooltip-enabled="true" data-tooltip-format="{0}" data-small-step=".01" data-large-step=".01" min="-1" max="1" />\n\t\t\t</div>\n\t\t\t<div>\n\t\t\t\t<div>Contrast</div>\n\t\t\t\t\t<input class="slider" data-role="slider" data-tick-placement="none" data-bind="value: effects.brightnessContrast.contrast.value, events: { slide: change, change: change }" max="1" min="-1" data-small-step=".01" data-large-step=".01"/>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<br />\n\t\t\t<h3>Vignette</h3>\n\t\t\t<div>\n\t\t\t\t<div>Corner Size</div>\n\t\t\t\t\t<input data-role="slider" data-tick-placement="none" class="slider" data-large-step=".01" data-small-step=".01" max="1" min="0" data-bind="value: effects.vignette.size.value, events: { slide: change, change: change }" />\n\t\t\t</div>\n\t\t\t<div>\t\n\t\t\t\t<div>Corner Amount</div>\n\t\t\t\t<input data-role="slider" data-tick-placement="none" class="slider" data-large-step=".01" data-small-step=".01" max="1" min="0" data-bind="value: effects.vignette.amount.value, events: { slide: change, change: change }" />\n\t\t\t</div>\n\t\t\t<br />\n\t\t\t<h3>Hue / Saturation</h3>\n\t\t\t<div>\n\t\t\t\t<div>Hue</div>\n\t\t\t\t\t<input data-role="slider" data-tick-placement="none" class="slider" data-large-step=".01" data-small-step=".01" max="1" min="0" data-bind="value: effects.hueSaturation.hue.value, events: { slide: change, change: change }" />\n\t\t\t</div>\n\t\t\t<div>\t\n\t\t\t\t<div>Saturation</div>\n\t\t\t\t<input data-role="slider" data-tick-placement="none" class="slider" data-large-step=".01" data-small-step=".01" max="1" min="0" data-bind="value: effects.hueSaturation.saturation.value, events: { slide: change, change: change }" />\n\t\t\t</div>\n\t\t\t<br />\n\t\t\t<h3>Noise</h3>\n\t\t\t<div>\n\t\t\t\t<div>Noise</div>\n\t\t\t\t\t<input data-role="slider" data-tick-placement="none" class="slider" data-large-step=".01" data-small-step=".01" max="1" min="0" data-bind="value: effects.noise.noise.value, events: { slide: change, change: change }" />\n\t\t\t</div>\n\t\t\t<!--\n\t\t\t<div>\n\t\t\t\t<div>Denoise</div>\n\t\t\t\t\t<input data-role="slider" data-tick-placement="none" class="slider" data-large-step="1" data-small-step="1" max="50" min="0" data-bind="value: effects.denoise.denoise.value, events: { slide: change, change: change }" />\n\t\t\t</div>\n\t\t-->\n\t\t</div>\n\t</div>\n</div>';});
 
 (function() {
   var __hasProp = Object.prototype.hasOwnProperty;
@@ -2921,6 +2921,7 @@ define('text!mylibs/customize/views/customize.html',[],function () { return '\n<
         $.subscribe('/customize', function(sender, saveFunction) {
           return customizeEffect(sender, saveFunction);
         });
+        $(webgl).addClass("reflection");
         $content.find(".canvas").append(webgl);
         modal = $content.kendoWindow({
           visible: false,
@@ -3119,8 +3120,15 @@ define('text!mylibs/pictures/views/picture.html',[],function () { return '<div c
       });
       $div.on("click", ".trash", function() {
         $.subscribe("/file/deleted/" + message.name, function() {
-          $div.remove();
-          $container.masonry("reload");
+          $div.kendoStop(true).kendoAnimate({
+            effects: "zoomOut fadeOut",
+            duration: 500,
+            hide: true,
+            complete: function() {
+              $div.remove();
+              return $container.masonry("reload");
+            }
+          });
           return $.unsubscribe("file/deleted/" + message.name);
         });
         return $.publish("/postman/deliver", [
@@ -3698,7 +3706,7 @@ define('text!mylibs/preview/views/selectPreview.html',[],function () { return '<
 
 }).call(this);
 
-define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="customize">\n\t<div class="row dark">\n\t\t<div class="span6">\n\t\t\t<div class="row centered no-margin">\n\t\t\t\t<div class="canvas"></div>\n\t\t\t\t<div class="yep-nope">\n\t\t\t\t\t<button class="button" data-bind="events: { click: yep }">Yep</button>\n\t\t\t\t\t<button class="button" data-bind="events: { click: nope }">Nope</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class="span4">\n\t\t\t<h3>Brushes</h3>\n\t\t\t<div class="pallet">\n\t\t\t\t# for (var i = 0; i < data.length; i++) { #\n\t\t\t\t\t<div class="pallet-item"><span data-r="${ data[i].r }" data-g="${ data[i].g }" data-b="${ data[i].b }" data-a = "${ data[i].a }" style="background-color: ${ data[i].css() }" data-bind="events: { click: draw }" class="${ data[i].class() }"></span></div>\n\t\t\t\t# } #\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>';});
+define('text!mylibs/stamp/views/stamp.html',[],function () { return '\n<div id="customize">\n\t<div class="row dark">\n\t\t<div class="span6">\n\t\t\t<div class="row centered no-margin">\n\t\t\t\t<div class="canvas"></div>\n\t\t\t\t<div class="yep-nope">\n\t\t\t\t\t<button class="button" data-bind="events: { click: yep }">Yep</button>\n\t\t\t\t\t<button class="button" data-bind="events: { click: nope }">Nope</button>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class="span4">\n\t\t\t<h2>Brushes</h2>\n\t\t\t<div class="pallet">\n\t\t\t\t<div class="pallet-items">\n\t\t\t\t\t# for (var i = 0; i < data.length; i++) { #\n\t\t\t\t\t\t<div class="pallet-item"><span class="brush" data-r="${ data[i].r }" data-g="${ data[i].g }" data-b="${ data[i].b }" data-a = "${ data[i].a }" style="background-color: ${ data[i].css() }" data-bind="events: { click: draw }" class="${ data[i].class() }"></span></div>\n\t\t\t\t\t# } #\n\t\t\t\t</div>\n\t\t\t\t<div class="custom-color">\n\t\t\t\t\t<div>\n\t\t\t\t\t\t<div><h4>Red</h4></div>\n\t\t\t\t\t\t<input class="custom-color-slider" data-role="slider" data-tick-placement="none" data-bind="value: red, events: { slide: change, change: change }" data-data-small-step="1" data-large-step="1" min="0" max="255" />\n\t\t\t\t\t</div>\n\t\t\t\t\t<div>\n\t\t\t\t\t\t<div><h4>Green</h4></div>\n\t\t\t\t\t\t<input class="custom-color-slider" data-role="slider" data-tick-placement="none" data-bind="value: green, events: { slide: change, change: change }" data-small-step="1" data-large-step="1" min="0" max="255" />\n\t\t\t\t\t</div>\n\t\t\t\t\t<div>\n\t\t\t\t\t\t<div><h4>Blue</h4></div>\n\t\t\t\t\t\t<input class="custom-color-slider" data-role="slider" data-tick-placement="none" data-bind="value: blue, events: { slide: change, change: change }" data-small-step="1" data-large-step="1" min="0" max="255" />\n\t\t\t\t\t</div>\n\t\t\t\t\t<div>\n\t\t\t\t\t\t<div><h4>Alpha</h4></div>\n\t\t\t\t\t\t<input class="custom-color-slider" data-role="slider" data-tick-placement="none" data-bind="value: alpha, events: { slide: change, change: change }" data-small-step="1" data-large-step="1" min="0" max="255" />\n\t\t\t\t\t</div>\n\t\t\t\t\t<div>\n\t\t\t\t\t\t<div><h4>Size</h4></div>\n\t\t\t\t\t\t<input class="custom-color-slider" data-role="slider" data-tick-placement="none" data-bind="value: size, events: { slide: change, change: change }" data-small-step="0.5" data-large-step="0.5" min="0" max="10" />\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class="pallet-item">\n\t\t\t\t\t\t<span class="brush" data-bind="style: { backgroundColor: preview, width: size, height: size }"></span>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>';});
 
 (function() {
 
@@ -4716,6 +4724,16 @@ define("libs/jquery/jquery.masonry.min", function(){});
     pixelsBetweenStamps = 0;
     callback = {};
     viewModel = kendo.observable({
+      red: 0,
+      green: 0,
+      blue: 0,
+      alpha: 0,
+      size: 4,
+      preview: null,
+      change: function(e) {
+        this.set("preview", "rgba(" + (this.get("red")) + "," + (this.get("green")) + "," + (this.get("blue")) + "," + (this.get("alpha")) + ")");
+        return updateBrush(this.get("red"), this.get("green"), this.get("blue"), this.get("alpha"), this.get("size"));
+      },
       draw: function(e) {
         var a, b, g, r;
         if ($activeBrush) $activeBrush.removeClass("selected");
@@ -4724,7 +4742,11 @@ define("libs/jquery/jquery.masonry.min", function(){});
         g = $activeBrush.data("g");
         b = $activeBrush.data("b");
         a = $activeBrush.data("a");
-        return updateBrush(r, g, b, a);
+        this.set("red", r);
+        this.set("green", g);
+        this.set("blue", b);
+        this.set("alpha", a);
+        return this.change();
       },
       yep: function() {
         callback(canvas.toDataURL());
@@ -4743,13 +4765,13 @@ define("libs/jquery/jquery.masonry.min", function(){});
       canvas.update();
       return utils.getAnimationFrame()(render);
     };
-    updateBrush = function(red, green, blue, alpha) {
+    updateBrush = function(red, green, blue, alpha, size) {
       stampTexture = canvas.texture(createBlobBrush({
         r: red,
         g: green,
         b: blue,
         a: alpha,
-        radius: 5,
+        radius: size,
         fuzziness: 1
       }));
       return pixelsBetweenStamps = 5 / 4;
@@ -4842,6 +4864,7 @@ define("libs/jquery/jquery.masonry.min", function(){});
         $content = $(template(pallet));
         drawSafe = document.createElement("canvas");
         canvas = fx.canvas();
+        $(canvas).addClass("reflection");
         $content.find(".canvas").append(canvas);
         $window = $content.kendoWindow({
           visible: false,
@@ -4863,7 +4886,7 @@ define("libs/jquery/jquery.masonry.min", function(){});
               duration: 500
             }
           }
-        }).data("kendoWindow").center();
+        }).data("kendoWindow");
         kendo.bind($content, viewModel);
         return $.subscribe("/stamp/show", function(src, saveFunction) {
           var ctx, oldImage;
@@ -4877,11 +4900,11 @@ define("libs/jquery/jquery.masonry.min", function(){});
           texture = canvas.texture(drawSafe);
           bufferTexture = canvas.texture(texture.width(), texture.height());
           bufferTexture.clear();
-          updateBrush(255, 255, 255, 255);
+          viewModel.change();
           $activeBrush = $content.find(".default");
           setupMouse();
           render();
-          return $window.open();
+          return $window.center().open();
         });
       }
     };

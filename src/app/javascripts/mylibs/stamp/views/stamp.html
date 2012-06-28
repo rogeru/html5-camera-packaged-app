@@ -11,11 +11,38 @@
 			</div>
 		</div>
 		<div class="span4">
-			<h3>Brushes</h3>
+			<h2>Brushes</h2>
 			<div class="pallet">
-				# for (var i = 0; i < data.length; i++) { #
-					<div class="pallet-item"><span data-r="${ data[i].r }" data-g="${ data[i].g }" data-b="${ data[i].b }" data-a = "${ data[i].a }" style="background-color: ${ data[i].css() }" data-bind="events: { click: draw }" class="${ data[i].class() }"></span></div>
-				# } #
+				<div class="pallet-items">
+					# for (var i = 0; i < data.length; i++) { #
+						<div class="pallet-item"><span class="brush" data-r="${ data[i].r }" data-g="${ data[i].g }" data-b="${ data[i].b }" data-a = "${ data[i].a }" style="background-color: ${ data[i].css() }" data-bind="events: { click: draw }" class="${ data[i].class() }"></span></div>
+					# } #
+				</div>
+				<div class="custom-color">
+					<div>
+						<div><h4>Red</h4></div>
+						<input class="custom-color-slider" data-role="slider" data-tick-placement="none" data-bind="value: red, events: { slide: change, change: change }" data-data-small-step="1" data-large-step="1" min="0" max="255" />
+					</div>
+					<div>
+						<div><h4>Green</h4></div>
+						<input class="custom-color-slider" data-role="slider" data-tick-placement="none" data-bind="value: green, events: { slide: change, change: change }" data-small-step="1" data-large-step="1" min="0" max="255" />
+					</div>
+					<div>
+						<div><h4>Blue</h4></div>
+						<input class="custom-color-slider" data-role="slider" data-tick-placement="none" data-bind="value: blue, events: { slide: change, change: change }" data-small-step="1" data-large-step="1" min="0" max="255" />
+					</div>
+					<div>
+						<div><h4>Alpha</h4></div>
+						<input class="custom-color-slider" data-role="slider" data-tick-placement="none" data-bind="value: alpha, events: { slide: change, change: change }" data-small-step="1" data-large-step="1" min="0" max="255" />
+					</div>
+					<div>
+						<div><h4>Size</h4></div>
+						<input class="custom-color-slider" data-role="slider" data-tick-placement="none" data-bind="value: size, events: { slide: change, change: change }" data-small-step="0.5" data-large-step="0.5" min="0" max="10" />
+					</div>
+					<div class="pallet-item">
+						<span class="brush" data-bind="style: { backgroundColor: preview, width: size, height: size }"></span>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

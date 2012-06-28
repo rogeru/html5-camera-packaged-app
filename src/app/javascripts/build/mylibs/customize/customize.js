@@ -122,6 +122,7 @@
         $.subscribe('/customize', function(sender, saveFunction) {
           return customizeEffect(sender, saveFunction);
         });
+        $(webgl).addClass("reflection");
         $content.find(".canvas").append(webgl);
         modal = $content.kendoWindow({
           visible: false,

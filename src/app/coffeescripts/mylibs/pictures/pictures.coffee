@@ -81,11 +81,13 @@ define([
 			# from the file system
 			$.subscribe "/file/deleted/#{message.name}", ->
 
-				# remove the object from the UI
-				$div.remove()
-				
-				# re-arrange all the images
-				$container.masonry "reload"
+				# animate the div out
+				$div.kendoStop(true).kendoAnimate({ effects: "zoomOut fadeOut", duration: 500, hide: true, complete: ->
+					# remove the object from the UI
+					$div.remove()
+					# re-arrange all the images
+					$container.masonry "reload"
+				});
 				
 				# unsubcribe from this event as the object is deleted. forevermore.
 				$.unsubscribe "file/deleted/#{message.name}"

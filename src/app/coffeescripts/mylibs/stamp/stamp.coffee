@@ -29,6 +29,21 @@ define([
 	# create a view model for the button events in the ui
 	viewModel = kendo.observable {
 
+		red: 0
+		green: 0
+		blue: 0
+		alpha: 0
+		size: 4
+		preview: null
+
+		change: (e) ->
+
+			# update the color preview
+			this.set "preview", "rgba(#{this.get("red")},#{this.get("green")},#{this.get("blue")},#{this.get("alpha")})"
+
+			updateBrush(this.get("red"), this.get("green"), this.get("blue"), this.get("alpha"), this.get("size"))
+
+
 		# called when color circle is clicked
 		draw: (e) ->
 
@@ -46,8 +61,13 @@ define([
 			b = $activeBrush.data "b"
 			a = $activeBrush.data "a"
 
-			# update the brush to the new color
-			updateBrush(r, g, b, a)
+			# set the sliders
+			this.set "red", r
+			this.set "green", g
+			this.set "blue", b
+			this.set "alpha", a
+
+			this.change()
 
 		# fired on yep click
 		yep: ->
@@ -88,7 +108,7 @@ define([
 		utils.getAnimationFrame()(render)
 
 	# creates a new brush texture
-	updateBrush = (red, green, blue, alpha) ->
+	updateBrush = (red, green, blue, alpha, size) ->
 		
 		# return a new texture modifying the pixels to 
 		# make it the right color
@@ -97,14 +117,14 @@ define([
 			g: green
 			b: blue 
 			a: alpha
-			radius: 5
+			radius: size
 			fuzziness: 1
 		))
 
 		# this determines how far we drag before we drag before
 		# drawing starts
 		# TODO: this is static and not awesome
-		pixelsBetweenStamps = 5 / 4
+		pixelsBetweenStamps = 5/4
 
 	# update the current stamp
 	updateStamp = (image) ->
@@ -222,8 +242,11 @@ define([
 			# create a canvas for drawing to
 			drawSafe = document.createElement("canvas")
 
-			# setup the mouse on the canvas
+			# create a new webgl canvas
 			canvas = fx.canvas()
+
+			# give the canvas some sexy reflection
+			$(canvas).addClass("reflection")
 
 			# append the canvas to the HTML
 			$content.find(".canvas").append(canvas)
@@ -244,7 +267,7 @@ define([
 					close:
 						effects: "slide:up fadeOut"
 						duration: 500
-			.data("kendoWindow").center()
+			.data("kendoWindow")
 
 			# bind the view model
 			kendo.bind($content, viewModel)
@@ -277,7 +300,7 @@ define([
 				bufferTexture.clear()
 			
 				# give the brush a default value of black
-				updateBrush(255, 255, 255, 255)
+				viewModel.change()
 
 				# find the default color and set it as the active brush
 				$activeBrush = $content.find(".default")
@@ -289,7 +312,7 @@ define([
 				render()
 
 				# open the kendo ui window
-				$window.open()
+				$window.center().open()
 		
 
 )

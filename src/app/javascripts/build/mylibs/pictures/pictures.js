@@ -65,8 +65,15 @@
       });
       $div.on("click", ".trash", function() {
         $.subscribe("/file/deleted/" + message.name, function() {
-          $div.remove();
-          $container.masonry("reload");
+          $div.kendoStop(true).kendoAnimate({
+            effects: "zoomOut fadeOut",
+            duration: 500,
+            hide: true,
+            complete: function() {
+              $div.remove();
+              return $container.masonry("reload");
+            }
+          });
           return $.unsubscribe("file/deleted/" + message.name);
         });
         return $.publish("/postman/deliver", [
